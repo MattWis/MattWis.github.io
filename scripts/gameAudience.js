@@ -32,7 +32,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           var _g = this
             , database = _g.state.database;
           database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/avatars');
-					database.myAvatar = database.avatars.push({joined: new Date()});
+					database.myAvatar = database.avatars.push({joined: (new Date()).toJSON()});
         }
       , setupGraphics: function () {
           var _g = this
