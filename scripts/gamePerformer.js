@@ -15,8 +15,9 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
       //, audience_member: {
             //go: null
           //, index: 0
-          //, position: {x: 0, y: 0}
         //}
+      }
+    , attacks: {
       }
     }
   , init: function () {
@@ -58,8 +59,6 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
     , setupHandlers: function () {
         var _g = this
           , stage = _g.state.stage;
-        //stage.mousedown = HANDLE_INPUT.clickOnStage.bind(_g);
-        //stage.mousedown = HANDLE_EVENT.setupDBCallbacks.bind(_g);
       }
     , render: function () {
         var _g = this;
