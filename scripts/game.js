@@ -6,10 +6,18 @@ define(['zepto', 'pixi'], function ($, PIXI) {
       , stage: null
       }
     , init: function () {
-					var clicks = new Firebase('https://olinhackmit.firebaseIO.com/clicks');
+					var positions = new Firebase('https://olinhackmit.firebaseIO.com/positions');
+					var myPosition = positions.push();
+					myPosition.set({x: 0, y: 0});
 
-					clicks.on('child_added', function(snapshot) {
-						console.log(snapshot.val());
+					positions.on('value', function(snapshot) {
+						var data = snapshot.val();
+						for (var client in data) {
+          		if (data.hasOwnProperty(client)) {
+								_g.avatar.position.x = data[client].x;
+								_g.avatar.position.y = data[client].y;
+							}
+						}
 					});
 
           var _g = this
@@ -23,9 +31,12 @@ define(['zepto', 'pixi'], function ($, PIXI) {
 
           stage.mousedown = function (e) {
             _g.avatar.position = e.global.clone();
-						console.log('clack');
-						clicks.push({click: 1});
           }
+
+					stage.mousemove = function (e) {
+						myPosition.set({ x: e.originalEvent.pageX, y: e.originalEvent.pageY });
+					}
+
           _g.avatar = new PIXI.Sprite(avatarTexture);
 
           _g.avatar.position.x = 400;
