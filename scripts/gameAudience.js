@@ -3,20 +3,22 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
     var G = {
       state: {
         database: {
-					avatars: null
-				,	myAvatar: null
+          avatars: null
+        , myAvatar: null
+        , attacks: null
+        , myID: null
         }
       , renderer: null
       , stage: null
       , textures: {
-			    avatar: null
-				}
-			, avatars: {
-			//client: {
+          avatar: null
+        }
+      , avatars: {
+      //client: {
           //go: null
         //, pos: {x: 0, y: 0}
-				//}
-				}
+        //}
+        }
       }
     , init: function () {
           var _g = this;
@@ -32,7 +34,11 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           var _g = this
             , database = _g.state.database;
           database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/avatars');
-					database.myAvatar = database.avatars.push({joined: (new Date()).toJSON()});
+          database.myAvatar = database.avatars.push({joined: (new Date()).toJSON()});
+          database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/attacks');
+
+          var pathArray = database.myAvatar.path.m;
+          database.myID = pathArray[pathArray.length - 1];
         }
       , setupGraphics: function () {
           var _g = this
@@ -47,7 +53,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
         }
       , setupObjects: function () {
           var _g = this
-					  , textures = _g.state.textures
+            , textures = _g.state.textures
+            , avatar = _g.state.avatar
             , stage = _g.state.stage;
 
           textures.avatar = PIXI.Texture.fromImage("images/testAvatar.png")
@@ -56,7 +63,6 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           var _g = this
             , stage = _g.state.stage;
           stage.mousedown = HANDLE_INPUT.clickOnStage.bind(_g);
-          //stage.mousedown = HANDLE_EVENT.setupDBCallbacks.bind(_g);
         }
       , render: function () {
           var _g = this;
@@ -67,34 +73,34 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
       , simulate: function () {
           var _g = this;
         }
-			, addAvatar: function (id, avatarData) {
-				  var _g = this
-					  , stage = _g.state.stage
-						, avatars = _g.state.avatars
-						, textures = _g.state.textures
-						, avatar;
+      , addAvatar: function (id, avatarData) {
+          var _g = this
+            , stage = _g.state.stage
+            , avatars = _g.state.avatars
+            , textures = _g.state.textures
+            , avatar;
 
-					avatar = {};
-					avatar.go = new PIXI.Sprite(textures.avatar);
+          avatar = {};
+          avatar.go = new PIXI.Sprite(textures.avatar);
 
-					//avatar.go.position = avatarData;
-					avatar.go.position.x = avatarData.x;
-					avatar.go.position.y = avatarData.y;
+          //avatar.go.position = avatarData;
+          avatar.go.position.x = avatarData.x;
+          avatar.go.position.y = avatarData.y;
 
-					avatar.go.scale.x = 0.5;
-					avatar.go.scale.y = 0.5;
+          avatar.go.scale.x = 0.5;
+          avatar.go.scale.y = 0.5;
 
-					stage.addChild(avatar.go);
-					avatars[id] = avatar;
-				}
-			, changeAvatar: function(id, avatarData) {
-					var _g = this
-						, avatar = _g.avatars[id];
+          stage.addChild(avatar.go);
+          avatars[id] = avatar;
+        }
+      , changeAvatar: function(id, avatarData) {
+          var _g = this
+            , avatar = _g.avatars[id];
 
-					avatar.go.position.x = avatarData.x;
-					avatar.go.position.y = avatarData.y;
-				}
-			}
+          avatar.go.position.x = avatarData.x;
+          avatar.go.position.y = avatarData.y;
+        }
+      }
 
     window.G = G;
     return G;
