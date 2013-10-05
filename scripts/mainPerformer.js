@@ -15,6 +15,6 @@ require.config({
 	}
 });
 
-require(['domReady!', 'game'], function(_, G) {
+require(['domReady!', 'gamePerformer'], function(_, G) {
   G.init();
 });

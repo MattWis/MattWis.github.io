@@ -1,16 +1,22 @@
-define(['zepto', 'pixi', 'handle'], function ($, PIXI, HANDLE) {
+define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE_INPUT) {
 
     var G = {
       state: {
         database: {
-            clicks: null
+					avatars: null
+				,	myAvatar: null
         }
       , renderer: null
       , stage: null
-      , avatar: {
-          go: null
-        , pos: {x: 0, y: 0}
-        }
+      , textures: {
+			    avatar: null
+				}
+			, avatars: {
+			//client: {
+          //go: null
+        //, pos: {x: 0, y: 0}
+				//}
+				}
       }
     , init: function () {
           var _g = this;
@@ -25,10 +31,8 @@ define(['zepto', 'pixi', 'handle'], function ($, PIXI, HANDLE) {
       , setupDBConnection: function () {
           var _g = this
             , database = _g.state.database;
-          database.clicks = new Firebase('https://olinhackmit.firebaseIO.com/clicks');
-          database.clicks.on('child_added', function(snapshot) {
-            console.log(snapshot.val());
-          });
+          database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/avatars');
+					database.myAvatar = database.avatars.push({joined: new Date()});
         }
       , setupGraphics: function () {
           var _g = this
@@ -43,24 +47,17 @@ define(['zepto', 'pixi', 'handle'], function ($, PIXI, HANDLE) {
         }
       , setupObjects: function () {
           var _g = this
+					  , textures = _g.state.textures
             , avatar = _g.state.avatar
-            , avatarTexture = PIXI.Texture.fromImage("images/testAvatar.png")
             , stage = _g.state.stage;
 
-          avatar.go = new PIXI.Sprite(avatarTexture);
-
-          avatar.go.position.x = 400;
-          avatar.go.position.y = 300;
-
-          avatar.go.scale.x = 0.5;
-          avatar.go.scale.y = 0.5;
-
-          stage.addChild(avatar.go);
+          textures.avatar = PIXI.Texture.fromImage("images/testAvatar.png")
         }
       , setupHandlers: function () {
           var _g = this
             , stage = _g.state.stage;
-          stage.mousedown = HANDLE.clickOnStage.bind(_g);
+          stage.mousedown = HANDLE_INPUT.clickOnStage.bind(_g);
+          //stage.mousedown = HANDLE_EVENT.setupDBCallbacks.bind(_g);
         }
       , render: function () {
           var _g = this;
@@ -70,9 +67,35 @@ define(['zepto', 'pixi', 'handle'], function ($, PIXI, HANDLE) {
         }
       , simulate: function () {
           var _g = this;
-          _g.state.avatar.go.rotation += 0.1;
         }
-      };
+			, addAvatar: function (id, avatarData) {
+				  var _g = this
+					  , stage = _g.state.stage
+						, avatars = _g.state.avatars
+						, textures = _g.state.textures
+						, avatar;
+
+					avatar = {};
+					avatar.go = new PIXI.Sprite(textures.avatar);
+
+					//avatar.go.position = avatarData;
+					avatar.go.position.x = avatarData.x;
+					avatar.go.position.y = avatarData.y;
+
+					avatar.go.scale.x = 0.5;
+					avatar.go.scale.y = 0.5;
+
+					stage.addChild(avatar.go);
+					avatars[id] = avatar;
+				}
+			, changeAvatar: function(id, avatarData) {
+					var _g = this
+						, avatar = _g.avatars[id];
+
+					avatar.go.position.x = avatarData.x;
+					avatar.go.position.y = avatarData.y;
+				}
+			}
 
     window.G = G;
     return G;
