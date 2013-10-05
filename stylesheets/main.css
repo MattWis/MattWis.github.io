@@ -1,0 +1,58 @@
+body {
+   -webkit-user-select: none;
+   -moz-user-select: -moz-none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+.debug__panel__data {
+   -webkit-user-select: text;
+   -moz-user-select: -moz-text;
+   -webkit-user-select: text;
+   -ms-user-select: text;
+   user-select: text;
+}
+
+canvas {
+	background-color: white;
+	border: dashed;
+	border-color: #ddd;
+	margin: 1em;
+	cursor: crosshair;
+}
+
+canvas:active, canvas:focus {
+	/* Bug in lots of browsers makes this not work once a
+	 selectable text node is a sibling */
+	cursor: crosshair;
+}
+
+.debug {
+	color: #aaa;
+	float: right;
+	font-family: OpenSans, 'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif;
+	margin: 1em;
+}
+
+.debug__input {
+	color: #aaa;
+	width: 3em;
+}
+
+.debug__panel {
+	margin-left: 3em;
+	margin-bottom: 1em;
+}
+
+.debug__panel {
+	display: none;
+}
+
+.debug__panel.is-shown {
+	display: block;
+}
+
+.key {
+	color: #777;
+}

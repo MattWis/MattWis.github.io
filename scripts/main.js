@@ -2,8 +2,8 @@
 
 require.config({
 	paths: {
-		zepto: 'zepto.min',
-		pixi: 'pixi',
+		zepto: '3rdparty/zepto.min',
+		pixi: '3rdparty/pixi',
 	},
 	shim: {
 		zepto: {
@@ -18,4 +18,3 @@ require.config({
 require(['domReady!', 'game'], function(_, G) {
   G.init();
 });
-
