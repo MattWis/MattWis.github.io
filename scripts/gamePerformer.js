@@ -10,11 +10,13 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
     , textures: {
         avatar: null
       }
+    , avatarCount: 0
     , avatars: {
-    //client: {
-        //go: null
-      //, pos: {x: 0, y: 0}
-      //}
+      //, audience_member: {
+            //go: null
+          //, index: 0
+          //, position: {x: 0, y: 0}
+        //}
       }
     }
   , init: function () {
@@ -68,33 +70,62 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
     , simulate: function () {
         var _g = this;
       }
-    , addAvatar: function (id, avatarData) {
+    , defaultAvatar: function(textures) {
         var _g = this
           , stage = _g.state.stage
-          , avatars = _g.state.avatars
-          , textures = _g.state.textures
-          , avatar;
+          , avatar = {};
 
-        avatar = {};
-        avatar.go = new PIXI.Sprite(textures.avatar);
+        avatar.go = new PIXI.Sprite(textures);
 
-        //avatar.go.position = avatarData;
-
-        avatar.go.position.x = avatarData.x;
-        avatar.go.position.y = avatarData.y;
+        avatar.go.position.x = 400;
+        avatar.go.position.y = 300;
 
         avatar.go.scale.x = 0.5;
         avatar.go.scale.y = 0.5;
 
         stage.addChild(avatar.go);
+
+        return avatar;
+    }
+    , addAvatar: function (id, avatarData) {
+        var _g = this
+          , avatars = _g.state.avatars
+          , textures = _g.state.textures
+          , avatar;
+
+        avatar = _g.defaultAvatar(textures.avatar);
+
+        avatar.index = _g.state.avatarCount;
+        _g.state.avatarCount += 1;
         avatars[id] = avatar;
+
+        _g.reorientAvatars(avatars);
+
+        console.log(avatars);
+
+    }
+    , reorientAvatars: function (avatars) {
+        var _g = this
+          , count = _g.state.avatarCount
+          , degreeDelta = 2 * Math.PI / count;
+
+        for (var avatarKey in avatars) {
+          if (avatars.hasOwnProperty(avatarKey)) {
+            var avatar = avatars[avatarKey]
+              , degrees = avatar.index * degreeDelta;
+
+            avatar.go.position.x = 200 * Math.cos(degrees) + 300;
+            avatar.go.position.y = 200 * Math.sin(degrees) + 300;
+            avatar.go.rotation = degrees - Math.PI / 2;
+          }
+        }
       }
     , changeAvatar: function(id, avatarData) {
         var _g = this
           , avatar = _g.avatars[id];
 
-        avatar.go.position.x = avatarData.x;
-        avatar.go.position.y = avatarData.y;
+        //avatar.go.position.x = avatarData.x;
+        //avatar.go.position.y = avatarData.y;
       }
     }
 
