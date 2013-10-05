@@ -48,7 +48,6 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
       , setupObjects: function () {
           var _g = this
 					  , textures = _g.state.textures
-            , avatar = _g.state.avatar
             , stage = _g.state.stage;
 
           textures.avatar = PIXI.Texture.fromImage("images/testAvatar.png")
