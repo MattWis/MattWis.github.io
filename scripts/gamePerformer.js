@@ -53,7 +53,7 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
           , avatar = _g.state.avatar
           , stage = _g.state.stage;
 
-        textures.avatar = PIXI.Texture.fromImage("images/testAvatar.png")
+        textures.avatar = PIXI.Texture.fromImage("images/avatar.png");
       }
     , setupHandlers: function () {
         var _g = this
