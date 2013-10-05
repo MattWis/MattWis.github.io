@@ -64,7 +64,7 @@ define(['zepto', 'pixi', 'handle'], function ($, PIXI, HANDLE) {
         }
       , render: function () {
           var _g = this;
-          _g.simulate.bind(_g);
+          _g.simulate.bind(_g)();
           _g.state.renderer.render(_g.state.stage);
           requestAnimationFrame(_g.render.bind(_g));
         }
