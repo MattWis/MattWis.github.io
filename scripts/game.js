@@ -1,51 +1,76 @@
-define(['zepto', 'pixi'], function ($, PIXI) {
+define(['zepto', 'pixi', 'handle'], function ($, PIXI, HANDLE) {
 
     var G = {
       state: {
-        renderer: null
+        database: {
+            clicks: null
+        }
+      , renderer: null
       , stage: null
+      , avatar: {
+          go: null
+        , pos: {x: 0, y: 0}
+        }
       }
     , init: function () {
-					var clicks = new Firebase('https://olinhackmit.firebaseIO.com/clicks');
+          var _g = this;
 
-					clicks.on('child_added', function(snapshot) {
-						console.log(snapshot.val());
-					});
+          _g.setupGraphics.bind(_g)();
+          _g.setupObjects.bind(_g)();
+          _g.setupDBConnection.bind(_g)();
+          _g.setupHandlers.bind(_g)();
 
+          requestAnimationFrame(_g.render.bind(_g));
+        }
+      , setupDBConnection: function () {
+          var _g = this
+            , database = _g.state.database;
+          database.clicks = new Firebase('https://olinhackmit.firebaseIO.com/clicks');
+          database.clicks.on('child_added', function(snapshot) {
+            console.log(snapshot.val());
+          });
+        }
+      , setupGraphics: function () {
           var _g = this
             , renderer = new PIXI.autoDetectRenderer(800, 600)
-            , stage = new PIXI.Stage(0x66FF99, true)
-            , avatarTexture = PIXI.Texture.fromImage("images/testAvatar.png")
-            , geo = PIXI.Graphics();
+            , stage = new PIXI.Stage(0x66FF99, true);
 
           renderer.view.style.display = "block";
           document.body.appendChild(renderer.view);
 
-          stage.mousedown = function (e) {
-            _g.avatar.position = e.global.clone();
-						console.log('clack');
-						clicks.push({click: 1});
-          }
-          _g.avatar = new PIXI.Sprite(avatarTexture);
-
-          _g.avatar.position.x = 400;
-          _g.avatar.position.y = 300;
-
-          _g.avatar.scale.x = 0.5;
-          _g.avatar.scale.y = 0.5;
-
-          stage.addChild(_g.avatar);
-
-          requestAnimationFrame(_g.animate.bind(_g));
-
           _g.state.renderer = renderer;
           _g.state.stage = stage;
         }
-      , animate: function () {
+      , setupObjects: function () {
+          var _g = this
+            , avatar = _g.state.avatar
+            , avatarTexture = PIXI.Texture.fromImage("images/testAvatar.png")
+            , stage = _g.state.stage;
+
+          avatar.go = new PIXI.Sprite(avatarTexture);
+
+          avatar.go.position.x = 400;
+          avatar.go.position.y = 300;
+
+          avatar.go.scale.x = 0.5;
+          avatar.go.scale.y = 0.5;
+
+          stage.addChild(avatar.go);
+        }
+      , setupHandlers: function () {
+          var _g = this
+            , stage = _g.state.stage;
+          stage.mousedown = HANDLE.clickOnStage.bind(_g);
+        }
+      , render: function () {
           var _g = this;
-          _g.avatar.rotation += 0.1;
+          _g.simulate.bind(_g);
           _g.state.renderer.render(_g.state.stage);
-          requestAnimationFrame(_g.animate.bind(_g));
+          requestAnimationFrame(_g.render.bind(_g));
+        }
+      , simulate: function () {
+          var _g = this;
+          _g.state.avatar.go.rotation += 0.1;
         }
       };
 
