@@ -1,4 +1,4 @@
-define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVENT) {
+define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, HANDLE_EVENT, HELPERS) {
   var G = {
     state: {
       database: {
@@ -8,6 +8,10 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
       }
     , renderer: null
     , stage: null
+    , screensize : {
+        w: document.width
+      , h: document.height
+    }
     , textures: {
         avatar: null
       , attack: null
@@ -25,6 +29,9 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
     }
   , init: function () {
         var _g = this;
+
+        _g.state.screensize.h = HELPERS.getDimensions().height;
+        _g.state.screensize.w = HELPERS.getDimensions().width;
 
         _g.setupGraphics.bind(_g)();
         _g.setupObjects.bind(_g)();
@@ -44,8 +51,10 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
       }
     , setupGraphics: function () {
         var _g = this
-          , renderer = new PIXI.autoDetectRenderer(800, 600)
-          , stage = new PIXI.Stage(0x66FF99, true);
+          , height = _g.state.screensize.h
+          , width = _g.state.screensize.w
+          , renderer = new PIXI.autoDetectRenderer(width, height)
+          , stage = new PIXI.Stage(0xFFCCCC, true);
 
         renderer.view.style.display = "block";
         document.body.appendChild(renderer.view);
@@ -71,11 +80,12 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
         _g.simulate.bind(_g)();
         _g.state.renderer.render(_g.state.stage);
         requestAnimationFrame(_g.render.bind(_g));
+        requestAnimationFrame(_g.allAttacksAnimationHandler.bind(_g));
       }
     , simulate: function () {
         var _g = this;
       }
-    , defaultAvatar: function(texture) {
+    , defaultAvatar: function (texture) {
         var _g = this
           , stage = _g.state.stage
           , avatar = {};
@@ -105,9 +115,6 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
         avatars[id] = avatar;
 
         _g.reorientAvatars(avatars);
-
-        console.log(avatars);
-
     }
     , reorientAvatars: function (avatars) {
         var _g = this
@@ -125,7 +132,7 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
           }
         }
       }
-    , defaultAttack: function(textures, attacker) {
+    , defaultAttack: function (textures, attacker) {
         var _g = this
           , stage = _g.state.stage
           , attack = {}
@@ -141,11 +148,13 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
         attack.go.scale.x = 1;
         attack.go.scale.y = 1;
 
+        attack.lastUpdated = (new Date()).getTime();
+
         stage.addChild(attack.go);
 
         return attack;
     }
-    , addAttack: function(attackID, attack) {
+    , addAttack: function (attackID, attack) {
         var _g = this
           , textures = _g.state.textures
           , attacker = _g.state.avatars[attack.attacker]
@@ -156,8 +165,52 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
         attack.index = _g.state.attackCount;
         _g.state.attackCount += 1;
         attacks[attackID] = attack;
+      }
+    , allAttacksAnimationHandler: function () {
+        var _g = this
+          , attacks = _g.state.attacks
+          , keysToBeKilled = [];
 
-        console.log(attacks);
+
+        for (var attackKey in attacks) {
+          if (attacks.hasOwnProperty(attackKey)) {
+            var maybeAttack = _g.attackAnimationHandler.bind(_g)(attackKey, attacks);
+            if (maybeAttack) {
+              keysToBeKilled.push(maybeAttack);
+            }
+          }
+        }
+
+        while (keysToBeKilled.length > 0) {
+          var key = keysToBeKilled.pop()
+            , nullObj = {};
+
+          nullObj[key] = null;
+          _g.state.database.attacks.update(nullObj);
+        }
+      }
+    , attackAnimationHandler: function (attackKey, attacks) {
+        var _g = this
+          , attack = attacks[attackKey]
+          , rotation = attack.go.rotation
+          , velocity = 1
+          , min_x = 0
+          , max_x = _g.state.screensize.w
+          , min_y = 0
+          , max_y = _g.state.screensize.w
+          , timeDelta = (new Date()).getTime() - attack.lastUpdated
+          , distance = velocity * timeDelta;
+
+        attack.go.position.x += distance * Math.sin(rotation);
+        attack.go.position.y -= distance * Math.cos(rotation);
+        var x = attack.go.position.x
+          , y = attack.go.position.y;
+
+        attack.lastUpdated = (new Date()).getTime();
+        if (x < min_x || x > max_x || y < min_y || y > max_y) {
+          return attackKey
+        }
+
       }
     }
 
