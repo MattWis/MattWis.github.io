@@ -119,15 +119,17 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
     , reorientAvatars: function (avatars) {
         var _g = this
           , count = _g.state.avatarCount
-          , degreeDelta = 2 * Math.PI / count;
+          , degreeDelta = 2 * Math.PI / count
+          , height = _g.state.screensize.h
+          , width = _g.state.screensize.w;
 
         for (var avatarKey in avatars) {
           if (avatars.hasOwnProperty(avatarKey)) {
             var avatar = avatars[avatarKey]
               , degrees = avatar.index * degreeDelta;
 
-            avatar.go.position.x = 200 * Math.cos(degrees) + 300;
-            avatar.go.position.y = 200 * Math.sin(degrees) + 300;
+            avatar.go.position.x = 200 * Math.cos(degrees) + width/2;
+            avatar.go.position.y = 200 * Math.sin(degrees) + height/2;
             avatar.go.rotation = degrees - Math.PI / 2;
           }
         }
