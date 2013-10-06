@@ -146,7 +146,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           }
 
           sprites.button.addShields = function() {
-            for (var i=0; i<3; i++) {
+            for (var i=0; i<2; i++) {
               var shield = new PIXI.Sprite(textures.shield);
               shield.position.x = size.w/2.0;
               shield.position.y = size.h/2.0;
@@ -156,7 +156,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
               shield.scale.y = .75;
               shield.pivot.x = 353.5;
               shield.pivot.y = 353.5;
-              shield.rotation = i*Math.PI*2/3;
+              shield.rotation = i*Math.PI*2/2;
               shield.visible = true;
               sprites.shields.push(shield);
               stage.addChild(shield);

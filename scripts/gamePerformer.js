@@ -154,7 +154,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
 
       center.pivot.x = 10;
       center.pivot.y = 10;
-
+      center.visible = false;
       center.scale.x = 1;
       center.scale.y = 1;
 
@@ -168,6 +168,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
 
         upperLeg.position.x = size.w / 2;
         upperLeg.position.y = size.h / 2;
+        upperLeg.visible = false;
 
 
         upperLeg.pivot.x = 0;
@@ -180,6 +181,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
 
         lowerLeg.position.x = size.w / 2 + Math.cos(rotation + Math.PI/2) * length * upperLeg.scale.x;
         lowerLeg.position.y = size.h / 2 + Math.sin(rotation + Math.PI/2) * length * upperLeg.scale.y;
+        lowerLeg.visible = false;
 
 
         lowerLeg.pivot.x = 0;
