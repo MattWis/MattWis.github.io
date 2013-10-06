@@ -38,7 +38,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         center: null
       , legs: []
       , hitRadius: 50
-      , tentacleHitRadius: 10
+      , tentacleHitRadius: 20
       , health: 9001
       , healthBar: null
       , maxHealth: 9001
@@ -327,7 +327,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         , centerPosition = _g.state.performer.center.position
         , centerRadius = _g.state.performer.hitRadius
         , tentacleHitRadius = _g.state.performer.tentacleHitRadius
-        , damage = 10        
+        , damage = 1000 / (_g.state.avatarCount + 1)        
         , newX
         , newY;
         //, distance = velocity * timeDelta;
@@ -353,9 +353,9 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
           var dist = Math.sqrt(Math.pow(newX - legPosition.x, 2) + Math.pow(newY - legPosition.y, 2));
           if (dist < tentacleHitRadius) {
             //decrement health of performer
-            attack.velocity.x *= -1;
-            attack.velocity.y *= -1;
-            // return attackKey;
+            // attack.velocity.x *= -1;
+            // attack.velocity.y *= -1;
+            return attackKey;
           }
         }
       }

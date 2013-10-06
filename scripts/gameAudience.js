@@ -2,7 +2,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
 
     var G = {
       state: {
-        database: {
+        mousemoved: false
+        , database: {
           avatars: null
         , myAvatar: null
         , attacks: null
@@ -39,6 +40,10 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           _g.setupObjects.bind(_g)();
           _g.setupDBConnection.bind(_g)();
           _g.setupHandlers.bind(_g)();
+
+          $('body').mousemove(function() {
+            _g.state.mousemoved = true;
+          });
 
           requestAnimationFrame(_g.render.bind(_g));
         }

@@ -4,7 +4,7 @@ define(['zepto', 'pixi'], function ($, PIXI) {
       var _g = this
       , database = _g.state.database;
       //_g.state.avatar.go.position = e.global.clone();
-      if (_g.state.sprites.button.canFire) {
+      if (_g.state.sprites.button.canFire && _g.state.mousemoved) {
         console.log("Attack!");
         database.myAvatar.push({fired: (new Date()).toJSON()});
         database.attacks.push({
