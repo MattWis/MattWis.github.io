@@ -41,7 +41,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       }
     }
   , init: function () {
-      var _g = this;
+      var _g = this
+        , stage = _g.state.stage;
 
       _g.state.screensize.h = HELPERS.getDimensions().height;
       _g.state.screensize.w = HELPERS.getDimensions().width;
@@ -57,11 +58,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         if (error) {
           window.alert('VR error:\n' + error.toString());
         }
-      }
-
-      stage.addChild(center);
-
-      performer.center = center;
+      });
 
       requestAnimationFrame(_g.render.bind(_g));
       vr.requestAnimationFrame(_g.tick.bind(_g));
@@ -369,6 +366,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
           }
         }
       }
+  };
+
 
   window.G = G;
   return G;
