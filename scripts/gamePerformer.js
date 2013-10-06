@@ -347,16 +347,19 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         return attackKey;
       }
 
-      // for (var i = 0; i<_g.state.performer.legs.length; i++) {
-      //   var legPosition = _g.state.performer.legs[i].lowerLeg.position;
-      //   var dist = Math.sqrt(Math.pow(newX - legPosition.x, 2) + Math.pow(newY - legPosition.y, 2));
-      //   if (dist < tentacleHitRadius) {
-      //     //decrement health of performer
-      //     attack.velocity.x *= -1;
-      //     attack.velocity.y *= -1;
-      //     // return attackKey;
-      //   }
-      // }
+      if (_g.state.started) {
+        for (var i = 0; i<_g.state.performer.legs.length; i++) {
+          var legPosition = _g.state.performer.legs[i].lowerLeg.position;
+          var dist = Math.sqrt(Math.pow(newX - legPosition.x, 2) + Math.pow(newY - legPosition.y, 2));
+          if (dist < tentacleHitRadius) {
+            //decrement health of performer
+            attack.velocity.x *= -1;
+            attack.velocity.y *= -1;
+            // return attackKey;
+          }
+        }
+      }
+
       attack.go.position.x = newX;
       attack.go.position.y = newY;
 
