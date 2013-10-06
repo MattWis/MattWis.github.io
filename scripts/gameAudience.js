@@ -8,6 +8,10 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
         }
       , renderer: null
       , stage: null
+      , screensize : {
+          w: document.width
+        , h: document.height
+      }
       , textures: {
 			    avatar: null
 				}
@@ -17,6 +21,9 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
         //, pos: {x: 0, y: 0}
 				//}
 				}
+      , sprites: {
+
+        }
       }
     , init: function () {
           var _g = this;
@@ -36,8 +43,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
         }
       , setupGraphics: function () {
           var _g = this
-            , renderer = new PIXI.autoDetectRenderer(800, 600)
-            , stage = new PIXI.Stage(0x66FF99, true);
+            , renderer = new PIXI.autoDetectRenderer(document.width, document.height)
+            , stage = new PIXI.Stage(0xEEEEEE, true);
 
           renderer.view.style.display = "block";
           document.body.appendChild(renderer.view);
@@ -48,10 +55,51 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
       , setupObjects: function () {
           var _g = this
 					  , textures = _g.state.textures
-            , stage = _g.state.stage;
+            , stage = _g.state.stage
+            , sprites = _g.state.sprites
+            , size = _g.state.screensize;
 
-          textures.avatar = PIXI.Texture.fromImage("images/testAvatar.png")
+          console.log(size);
+
+          textures.avatar = PIXI.Texture.fromImage("images/testAvatar.png");
+          textures.button = PIXI.Texture.fromImage("images/fireButton.png"); 
+
+          sprites.button = new PIXI.Sprite(textures.button);
+          sprites.button.setInteractive(true);
+          sprites.button.position.x = size.w/2.0;
+          sprites.button.position.y = size.h/2.0;
+          sprites.button.initialScale = {x: .75, y: .75};
+          sprites.button.scale.x = .75;
+          sprites.button.scale.y = .75;
+          sprites.button.pivot.x = 250;
+          sprites.button.pivot.y = 250;
+          sprites.button.clicked = false;
+          sprites.button.click = function(e) {
+            sprites.button.clicked = true;
+            sprites.button.lastClicked = (new Date()).getTime();
+            console.log("Fired");
+          }
+
+          sprites.button.animationHandler = function() {
+            if (sprites.button.clicked) {
+              var delta = (new Date()).getTime() - sprites.button.lastClicked
+                , execTime = 250
+                , scaleFactor = 800
+                , button = sprites.button;
+              if (delta <= execTime) {
+                console.log()
+                button.scale.x = button.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
+                button.scale.y = button.initialScale.y + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
+              } else {
+                button.clicked = false;
+              }
+            }
+          }
+
+          console.log(sprites.button);
+          stage.addChild(sprites.button);
         }
+
       , setupHandlers: function () {
           var _g = this
             , stage = _g.state.stage;
@@ -63,6 +111,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           _g.simulate.bind(_g)();
           _g.state.renderer.render(_g.state.stage);
           requestAnimationFrame(_g.render.bind(_g));
+          requestAnimationFrame(_g.state.sprites.button.animationHandler);
         }
       , simulate: function () {
           var _g = this;
