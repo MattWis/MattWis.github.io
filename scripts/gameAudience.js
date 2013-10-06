@@ -24,7 +24,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
 				//}
 				}
       , sprites: {
-
+          charges: []
         }
       }
     , init: function () {
@@ -79,6 +79,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           sprites.button.pivot.x = 250;
           sprites.button.pivot.y = 250;
           sprites.button.clicked = false;
+          sprites.button.chargeTime = 500;
+
           sprites.button.click = function(e) {
             sprites.button.clicked = true;
             sprites.button.lastClicked = (new Date()).getTime();
@@ -93,55 +95,87 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
             sprites.button.hover = false;
           }
 
+          sprites.button.addCharges = function() {
+            for (var i=0; i<100; i++) {
+              var charge = new PIXI.Sprite(textures.charge);
+              charge.position.x = size.w/2.0;
+              charge.position.y = size.h/2.0;
+              charge.initialScale = {x: .75, y: .75};
+              charge.hoverIncrease = .02;
+              charge.scale.x = .75;
+              charge.scale.y = .75;
+              charge.pivot.x = 250;
+              charge.pivot.y = 250;
+              charge.rotation = i*Math.PI*2/100;
+              charge.visible = true;
+              sprites.charges.push(charge);
+              stage.addChild(charge);
+            }
+          }
+
           sprites.button.animationHandler = function() {
             var button = sprites.button;
-            var charge = sprites.charge;
+            var charges = sprites.charges;
             if (button.clicked) {
               var delta = (new Date()).getTime() - sprites.button.lastClicked
                 , execTime = 250
                 , scaleFactor = 800;
+
               if (delta <= execTime) {
+                var angle = delta/execTime*2*Math.pi;
                 console.log()
                 button.scale.x = button.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
                 button.scale.y = button.initialScale.y + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
-                charge.scale.x = charge.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
-                charge.scale.y = charge.initialScale.y + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
+                for (var i = 0; i < charges.length; i++) {
+                  var charge = charges[i];
+                  charge.scale.x = charge.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
+                  charge.scale.y = charge.initialScale.y + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
+                }
               } else {
                 button.clicked = false;
+                button.charging = true;
+                button.startedCharging = (new Date()).getTime();
+              }
+            } else if (button.charging) {
+              var delta = (new Date()).getTime() - button.startedCharging;
+              if (delta <= button.chargeTime) {
+                var angle = delta/button.chargeTime*2*Math.PI;
+                for (var i = 0; i < charges.length; i++) {
+                  var charge = charges[i];
+                  if (i*Math.PI*2/100 < angle) {
+                    charge.visible = true;
+                  } else {
+                    charge.visible = false;
+                  }
+                }
+              } else {
+                button.charging = false;
+                for (var i = 0; i<charges.length; i++) {
+                  var charge = charges[i];
+                  charge.visible = true;
+                }
               }
             } else if (button.hover) {
               button.scale.x = button.initialScale.x + button.hoverIncrease;
               button.scale.y = button.initialScale.y + button.hoverIncrease;
-              charge.scale.x = charge.initialScale.x + button.hoverIncrease;
-              charge.scale.y = charge.initialScale.y + button.hoverIncrease;
-
+              for (var i = 0; i < charges.length; i++) {
+                var charge = charges[i];
+                charge.scale.x = charge.initialScale.x + button.hoverIncrease;
+                charge.scale.y = charge.initialScale.y + button.hoverIncrease;
+              }
             } else {
               button.scale.x = button.initialScale.x;
               button.scale.y = button.initialScale.y;
-              charge.scale.x = charge.initialScale.x;
-              charge.scale.y = charge.initialScale.y;
+              for (var i = 0; i < charges.length; i++) {
+                var charge = charges[i];
+                charge.scale.x = charge.initialScale.x;
+                charge.scale.y = charge.initialScale.y;
+              }
             }
           }
 
+          sprites.button.addCharges();
           stage.addChild(sprites.button);
-
-          sprites.charge = new PIXI.Sprite(textures.charge);
-          sprites.charge.setInteractive(true);
-          sprites.charge.position.x = size.w/2.0;
-          sprites.charge.position.y = size.h/2.0;
-          sprites.charge.initialScale = {x: .75, y: .75};
-          sprites.charge.hoverIncrease = .02;
-          sprites.charge.scale.x = .75;
-          sprites.charge.scale.y = .75;
-          sprites.charge.pivot.x = 250;
-          sprites.charge.pivot.y = 250;
-
-          sprites.charge.animationHandler = function() {
-            var charge = sprites.charge;
-          }
-
-          console.log(sprites.charge);
-          stage.addChild(sprites.charge);
         }
 
       , setupHandlers: function () {
