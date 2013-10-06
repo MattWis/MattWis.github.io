@@ -1,4 +1,4 @@
-define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, HANDLE_EVENT, HELPERS) {
+define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'helpers'], function ($, PIXI, vr, HANDLE_EVENT, HELPERS) {
   var G = {
     state: {
       database: {
@@ -23,11 +23,15 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
           //, index: 0
         //}
       }
+    , vr: {
+        vrState: null
+    }
     , attackCount: 0
     , attacks: {
       }
     , performer: {
         center: null
+        , legs: []
       }
     }
   , init: function () {
@@ -41,8 +45,16 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         _g.setupDBConnection.bind(_g)();
         HANDLE_EVENT.setupDBCallbacks.bind(_g)();
         _g.setupHandlers.bind(_g)();
+        _g.state.vr.vrState = new vr.State();
+
+        vr.load(function(error) {
+          if (error) {
+            window.alert('VR error:\n' + error.toString());
+            }
+        });
 
         requestAnimationFrame(_g.render.bind(_g));
+        vr.requestAnimationFrame(_g.tick.bind(_g));
       }
     , setupDBConnection: function () {
         var _g = this
@@ -67,24 +79,48 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         var _g = this
           , textures = _g.state.textures
           , avatar = _g.state.avatar
+          , screensize = _g.state.screensize
           , performer = _g.state.performer
           , stage = _g.state.stage;
 
         textures.avatar = PIXI.Texture.fromImage("images/avatar2.png");
         textures.attack = PIXI.Texture.fromImage("images/attack.png");
-        textures.center = PIXI.Texture.fromImage("images/bullet.png");
+        textures.center = PIXI.Texture.fromImage("images/center.png");
+        textures.leg = PIXI.Texture.fromImage("images/leg.png");
 
-        var center = new PIXI.Sprite(textures.avatar);
+        var center = new PIXI.Sprite(textures.center);
 
-        center.position.x = _g.state.screensize.h / 2;
-        center.position.y = _g.state.screensize.w / 2;
+        center.position.x = screensize.w / 2;
+        center.position.y = screensize.h / 2;
+
+        center.pivot.x = 10;
+        center.pivot.y = 10;
 
         center.scale.x = 1;
         center.scale.y = 1;
 
         stage.addChild(center);
         performer.center = center;
-        console.log(center);
+
+        function createLeg(rotation) {
+          var leg = new PIXI.Sprite(textures.leg);
+          leg.position.x = screensize.w / 2;
+          leg.position.y = screensize.h / 2;
+
+          leg.pivot.x = 0;
+          leg.pivot.y = 0;
+
+          leg.scale.x = 2;
+          leg.scale.y = 2;
+
+          leg.rotation = rotation;
+
+          stage.addChild(leg);
+          performer.legs.push(leg);
+        }
+
+        createLeg(Math.PI/2);
+        createLeg(-Math.PI/2);
 
       }
     , setupHandlers: function () {
@@ -97,6 +133,7 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         _g.state.renderer.render(_g.state.stage);
         requestAnimationFrame(_g.render.bind(_g));
         requestAnimationFrame(_g.allAttacksAnimationHandler.bind(_g));
+        vr.requestAnimationFrame(_g.tick.bind(_g));
       }
     , simulate: function () {
         var _g = this;
@@ -115,8 +152,7 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         avatar.go.pivot.x = texture.width / 2;
 
         stage.addChild(avatar.go);
-        console.log(avatar);
-        
+
         return avatar;
     }
     , addAvatar: function (id, avatarData) {
@@ -231,6 +267,28 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         }
 
       }
+
+      , tick: function () {
+          var _g = this
+            , state = _g.state.vr.vrState;
+          
+          if (!vr.pollState(_g.state.vr.vrState)) {
+          }
+
+          if (_g.state.vr.vrState.sixense.present) {
+            for (var n = 0; n < state.sixense.controllers.length; n++) {
+              var controller = state.sixense.controllers[n];
+              var cx = controller.position[0];
+
+              var cy = controller.position[2];
+              var angle = Math.atan2(cy, cx);
+              _g.state.performer.legs[n].rotation = angle;
+            }
+          }
+
+
+      }
+
     }
 
   window.G = G;
