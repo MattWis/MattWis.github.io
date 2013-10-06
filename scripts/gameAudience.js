@@ -42,7 +42,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
             , database = _g.state.database;
           database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/avatars');
           database.myAvatar = database.avatars.push({joined: (new Date()).toJSON()});
-          database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/attacks');
+          database.attacks = new Firebase('https://olinhackmit.firebaseIO.com/attacks');
 
           var pathArray = database.myAvatar.path.m;
           database.myID = pathArray[pathArray.length - 1];
