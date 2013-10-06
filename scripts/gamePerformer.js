@@ -196,9 +196,9 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       avatar.index = _g.state.avatarCount;
       var angle = avatarData.angle;
       console.log(angle);
-      avatar.go.rotation = 2*Math.PI - angle;
+      avatar.go.rotation = angle - Math.PI;
       avatar.go.position.x = _g.state.screensize.w/2 + 200 * Math.sin(angle);
-      avatar.go.position.y = _g.state.screensize.h/2 + 200 * Math.cos(angle);
+      avatar.go.position.y = _g.state.screensize.h/2 - 200 * Math.cos(angle);
       console.log(avatar.go.position);
       _g.state.avatarCount += 1;
       avatars[id] = avatar;
