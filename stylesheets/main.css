@@ -14,9 +14,12 @@ body {
    user-select: text;
 }
 
+body {
+    font-family: 'Raleway', sans-serif;
+}
+
 canvas {
 	background-color: white;
-	border: dashed;
 	border-color: #ddd;
 	margin: 1em;
 	cursor: crosshair;
