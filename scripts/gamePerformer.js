@@ -1,4 +1,4 @@
-define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, HANDLE_EVENT, HELPERS) {
+define(['zepto', 'pixi', 'handleEventPerformer', 'timer', 'helpers'], function ($, PIXI, HANDLE_EVENT, TIMER, HELPERS) {
   var G = {
     state: {
       database: {
@@ -23,9 +23,15 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
           //, index: 0
         //}
       }
+    , counters: {
+      shotsFired: 0
+    }
     , attackCount: 0
     , attacks: {
       }
+    , sprites: {
+
+    }
     }
   , init: function () {
         var _g = this;
@@ -64,10 +70,33 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         var _g = this
           , textures = _g.state.textures
           , avatar = _g.state.avatar
-          , stage = _g.state.stage;
+          , stage = _g.state.stage
+          , sprites =  _g.state.sprites
+          , size = _g.state.screensize;
 
         textures.avatar = PIXI.Texture.fromImage("images/avatar2.png");
         textures.attack = PIXI.Texture.fromImage("images/attack.png");
+
+        textures.start = PIXI.Texture.fromImage("images/startButton.png");
+
+        sprites.start = new PIXI.Sprite(textures.start);
+        sprites.start.setInteractive(true);
+        sprites.start.position.x = size.w/2.0;
+        sprites.start.position.y = size.h/2.0;
+        sprites.start.initialScale = {x: .75, y: .75};
+        sprites.start.hoverIncrease = .02;
+        sprites.start.scale.x = .5;
+        sprites.start.scale.y = .5;
+        sprites.start.pivot.x = 250;
+        sprites.start.pivot.y = 250;
+        sprites.start.visible = true;
+
+        sprites.start.click = function(e) {
+          sprites.start.visible = false;
+          TIMER.start();
+        }
+
+        stage.addChild(sprites.start);
       }
     , setupHandlers: function () {
         var _g = this

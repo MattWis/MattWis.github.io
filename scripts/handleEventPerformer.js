@@ -26,6 +26,8 @@ define(['zepto', 'pixi'], function ($, PIXI) {
 
       database.attacks.on('child_added', function(attack) {
         _g.addAttack(attack.name(), attack.val());
+        _g.state.counters.shotsFired++;
+        $('#countDiv').html(_g.state.counters.shotsFired.toString() + " shots fired");
       });
 
       database.attacks.on('child_removed', function(attack) {

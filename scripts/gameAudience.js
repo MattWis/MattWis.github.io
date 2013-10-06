@@ -84,6 +84,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           sprites.button.scale.y = .75;
           sprites.button.pivot.x = 250;
           sprites.button.pivot.y = 250;
+          sprites.button.visible = true;
           sprites.button.clicked = false;
           sprites.button.chargeTime = 500;
 

@@ -4,6 +4,9 @@ body {
    -webkit-user-select: none;
    -ms-user-select: none;
    user-select: none;
+   font-family: 'Raleway', sans-serif;
+   font-size: 50px;
+   color: #999999;
 }
 
 .debug__panel__data {
@@ -61,4 +64,20 @@ canvas:active, canvas:focus {
 
 .key {
 	color: #777;
+}
+
+#timer {
+    position: fixed;
+    top: 0;
+    right: 100px;
+    text-align: left;
+    z-index: 1000000;
+}
+
+#countDiv {
+    position: fixed;
+    top: 0;
+    left: 100px;
+    text-align: right;
+    z-index: 1000000;
 }
