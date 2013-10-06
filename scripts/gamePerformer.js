@@ -75,18 +75,18 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
     , simulate: function () {
         var _g = this;
       }
-    , defaultAvatar: function(textures) {
+    , defaultAvatar: function(texture) {
         var _g = this
           , stage = _g.state.stage
           , avatar = {};
 
-        avatar.go = new PIXI.Sprite(textures);
+        avatar.go = new PIXI.Sprite(texture);
 
         avatar.go.position.x = 400;
         avatar.go.position.y = 300;
 
-        // avatar.go.scale.x = 0.15;
-        // avatar.go.scale.y = 0.15;
+        avatar.go.pivot.y = texture.height / 2;
+        avatar.go.pivot.x = texture.width / 2;
 
         stage.addChild(avatar.go);
 
@@ -128,12 +128,15 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
     , defaultAttack: function(textures, attacker) {
         var _g = this
           , stage = _g.state.stage
-          , attack = {};
+          , attack = {}
+          , width = textures.avatar.width
+          , rotation = attacker.go.rotation;
 
-        attack.go = new PIXI.Sprite(textures);
+        attack.go = new PIXI.Sprite(textures.attack);
 
-        attack.go.position.x = attacker.go.position.x;
-        attack.go.position.y = attacker.go.position.y;
+        attack.go.position.x = attacker.go.position.x + width * Math.sin(rotation);
+        attack.go.position.y = attacker.go.position.y - width * Math.cos(rotation);
+        attack.go.rotation = rotation;
 
         attack.go.scale.x = 1;
         attack.go.scale.y = 1;
@@ -148,7 +151,7 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
           , attacker = _g.state.avatars[attack.attacker]
           , attacks = _g.attacks;
 
-        attack = _g.defaultAttack(textures.attack, attacker);
+        attack = _g.defaultAttack(textures, attacker);
 
         attack.index = _g.state.attackCount;
         _g.state.attackCount += 1;
