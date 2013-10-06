@@ -26,6 +26,9 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
     , attackCount: 0
     , attacks: {
       }
+    , performer: {
+        center: null
+      }
     }
   , init: function () {
         var _g = this;
@@ -64,10 +67,25 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         var _g = this
           , textures = _g.state.textures
           , avatar = _g.state.avatar
+          , performer = _g.state.performer
           , stage = _g.state.stage;
 
         textures.avatar = PIXI.Texture.fromImage("images/avatar2.png");
         textures.attack = PIXI.Texture.fromImage("images/attack.png");
+        textures.center = PIXI.Texture.fromImage("images/bullet.png");
+
+        var center = new PIXI.Sprite(textures.avatar);
+
+        center.position.x = _g.state.screensize.h / 2;
+        center.position.y = _g.state.screensize.w / 2;
+
+        center.scale.x = 1;
+        center.scale.y = 1;
+
+        stage.addChild(center);
+        performer.center = center;
+        console.log(center);
+
       }
     , setupHandlers: function () {
         var _g = this
@@ -97,7 +115,8 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         avatar.go.pivot.x = texture.width / 2;
 
         stage.addChild(avatar.go);
-
+        console.log(avatar);
+        
         return avatar;
     }
     , addAvatar: function (id, avatarData) {
