@@ -89,6 +89,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           sprites.button.pivot.y = 250;
           sprites.button.visible = true;
           sprites.button.clicked = false;
+          sprites.button.canFire = true;
           sprites.button.chargeTime = 500;
 
           sprites.activeUser = new PIXI.Sprite(textures.activeUser);
