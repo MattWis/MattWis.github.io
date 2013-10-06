@@ -178,6 +178,10 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'timer', 'helpers'], function (
         attack.go.scale.y = 1;
 
         attack.lastUpdated = (new Date()).getTime();
+        attack.velocity = {x: 0, y: 0};
+        var velScale = 0.1;
+        attack.velocity.x = Math.sin(rotation)*velScale;
+        attack.velocity.y = -Math.cos(rotation)*velScale;
 
         stage.addChild(attack.go);
 
@@ -221,17 +225,22 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'timer', 'helpers'], function (
     , attackAnimationHandler: function (attackKey, attacks) {
         var _g = this
           , attack = attacks[attackKey]
-          , rotation = attack.go.rotation
-          , velocity = 1
+          , velocity = attack.velocity
           , min_x = 0
           , max_x = _g.state.screensize.w
           , min_y = 0
           , max_y = _g.state.screensize.w
-          , timeDelta = (new Date()).getTime() - attack.lastUpdated
-          , distance = velocity * timeDelta;
+          , timeDelta = (new Date()).getTime() - attack.lastUpdated;
+          //, distance = velocity * timeDelta;
 
-        attack.go.position.x += distance * Math.sin(rotation);
-        attack.go.position.y -= distance * Math.cos(rotation);
+        attack.go.rotation = Math.atan2(velocity.y, velocity.x) - Math.PI/2;
+
+        //attack.go.rotation = 0;
+        //attack.velocity = {x: 0, y: 0};
+        attack.go.position.x += velocity.x * timeDelta;
+        attack.go.position.y += velocity.y * timeDelta;
+        //attack.go.position.x += distance * Math.sin(rotation);
+        //attack.go.position.y -= distance * Math.cos(rotation);
         var x = attack.go.position.x
           , y = attack.go.position.y;
 
