@@ -1,4 +1,4 @@
-define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVENT) {
+define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, HANDLE_EVENT, HELPERS) {
   var G = {
     state: {
       database: {
@@ -30,6 +30,9 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
   , init: function () {
         var _g = this;
 
+        _g.state.screensize.h = HELPERS.getDimensions().height;
+        _g.state.screensize.w = HELPERS.getDimensions().width;
+
         _g.setupGraphics.bind(_g)();
         _g.setupObjects.bind(_g)();
         _g.setupDBConnection.bind(_g)();
@@ -48,8 +51,10 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
       }
     , setupGraphics: function () {
         var _g = this
-          , renderer = new PIXI.autoDetectRenderer(800, 600)
-          , stage = new PIXI.Stage(0x66FF99, true);
+          , height = _g.state.screensize.h
+          , width = _g.state.screensize.w
+          , renderer = new PIXI.autoDetectRenderer(width, height)
+          , stage = new PIXI.Stage(0xFFCCCC, true);
 
         renderer.view.style.display = "block";
         document.body.appendChild(renderer.view);

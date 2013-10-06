@@ -1,4 +1,4 @@
-define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE_INPUT) {
+define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, PIXI, HANDLE_INPUT, HELPERS) {
 
     var G = {
       state: {
@@ -27,21 +27,11 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           charges: []
         }
       }
-    , getDimensions: function () {
-        //http://stackoverflow.com/questions/3437786/how-to-get-web-page-size-browser-window-size-screen-size-in-a-cross-browser-wa
-        var w = window
-          , d = document
-          , e = d.documentElement
-          , g = d.getElementsByTagName('body')[0]
-          , x = w.innerWidth || e.clientWidth || g.clientWidth
-          , y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-        return {width: x, height: y};
-      }
     , init: function () {
           var _g = this;
 
-          _g.state.screensize.h = this.getDimensions().height;
-          _g.state.screensize.w = this.getDimensions().width;
+          _g.state.screensize.h = HELPERS.getDimensions().height;
+          _g.state.screensize.w = HELPERS.getDimensions().width;
 
           _g.setupGraphics.bind(_g)();
           _g.setupObjects.bind(_g)();
