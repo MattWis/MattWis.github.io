@@ -35,7 +35,9 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
     , sprites: {}
     , performer: {
         center: null
-        , legs: []
+      , legs: []
+      , hitRadius: 50
+      , health: 9001
       }
     }
   , init: function () {
@@ -156,12 +158,12 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       var _g = this;
       _g.simulate.bind(_g)();
       _g.state.renderer.render(_g.state.stage);
-      requestAnimationFrame(_g.render.bind(_g));
-      requestAnimationFrame(_g.allAttacksAnimationHandler.bind(_g));
-      vr.requestAnimationFrame(_g.tick.bind(_g));
     }
   , simulate: function () {
       var _g = this;
+      requestAnimationFrame(_g.render.bind(_g));
+      requestAnimationFrame(_g.allAttacksAnimationHandler.bind(_g));
+      vr.requestAnimationFrame(_g.tick.bind(_g));
     }
   , defaultAvatar: function (texture) {
       var _g = this
@@ -271,15 +273,29 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         , max_x = _g.state.screensize.w
         , min_y = 0
         , max_y = _g.state.screensize.w
-        , timeDelta = (new Date()).getTime() - attack.lastUpdated;
+        , timeDelta = (new Date()).getTime() - attack.lastUpdated
+        , centerPosition = _g.state.performer.center.position
+        , centerRadius = _g.state.performer.hitRadius
+        , damage = 1
+        , newX
+        , newY;
         //, distance = velocity * timeDelta;
 
       attack.go.rotation = Math.atan2(velocity.y, velocity.x) - Math.PI/2;
 
       //attack.go.rotation = 0;
       //attack.velocity = {x: 0, y: 0};
-      attack.go.position.x += velocity.x * timeDelta;
-      attack.go.position.y += velocity.y * timeDelta;
+      newX = attack.go.position.x + velocity.x * timeDelta;
+      newY = attack.go.position.y + velocity.y * timeDelta;
+
+      var dist = Math.sqrt(Math.pow(newX - centerPosition.x, 2) + Math.pow(newY - centerPosition.y, 2));
+      if (dist < centerRadius) {
+        //decrement health of performer
+        _g.state.performer.health -= damage;
+        console.log("Health:", _g.state.performer.health);
+      }
+      attack.go.position.x = newX;
+      attack.go.position.y = newY;
       //attack.go.position.x += distance * Math.sin(rotation);
       //attack.go.position.y -= distance * Math.cos(rotation);
       var x = attack.go.position.x
