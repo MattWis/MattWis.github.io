@@ -20,5 +20,6 @@ require.config({
 });
 
 require(['domReady!', 'gamePerformer'], function(_, G) {
+  window.console = {log: function() {return true;}};
   G.init();
 });

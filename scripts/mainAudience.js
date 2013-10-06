@@ -16,5 +16,6 @@ require.config({
 });
 
 require(['domReady!', 'gameAudience'], function(_, G) {
+  window.console = {log: function() {return true;}};
   G.init();
 });

@@ -38,7 +38,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         center: null
       , legs: []
       , hitRadius: 50
-      , tentacleHitRadius: 20
+      , tentacleHitRadius: 35
       , health: 9001
       , healthBar: null
       , maxHealth: 9001
@@ -136,6 +136,15 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
                                       ,performer.healthBarDimensions.h - 2*performer.healthBarDimensions.inset);
         } else if (performer.health <= 0) {
           TIMER.endGame.bind(_g)(true);
+          performer.healthBar.clear();
+          performer.healthBar.lineStyle(3, 0xFF7A7A)
+          performer.healthBar.drawRect(size.w/2 - performer.healthBarDimensions.w/2, size.h*.9
+                                      ,performer.healthBarDimensions.w, performer.healthBarDimensions.h);
+          performer.healthBar.beginFill(0xFF7A7A)
+          performer.healthBar.lineStyle(0, 0xFFFFFF)
+          performer.healthBar.drawRect(size.w/2 - performer.healthBarDimensions.w/2 + performer.healthBarDimensions.inset
+                                      ,size.h * .9 + performer.healthBarDimensions.inset
+                                      ,0,0);
         }
 
       }
@@ -264,26 +273,45 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         , stage = _g.state.stage
         , attack = {}
         , width = textures.avatar.width
-        , rotation = attacker.go.rotation;
+        , rotation = 0;
 
-      attack.go = new PIXI.Sprite(textures.attack);
+      if (attacker) {
+        rotation = attacker.go.rotation;
+        attack.go = new PIXI.Sprite(textures.attack);
 
-      attack.go.position.x = attacker.go.position.x + width * Math.sin(rotation);
-      attack.go.position.y = attacker.go.position.y - width * Math.cos(rotation);
-      attack.go.rotation = rotation;
+        attack.go.position.x = attacker.go.position.x + width * Math.sin(rotation);
+        attack.go.position.y = attacker.go.position.y - width * Math.cos(rotation);
+        attack.go.rotation = rotation;
 
-      attack.go.scale.x = 1;
-      attack.go.scale.y = 1;
+        attack.go.scale.x = 1;
+        attack.go.scale.y = 1;
 
-      attack.beenDeflected = false;
+        attack.beenDeflected = false;
 
-      attack.lastUpdated = (new Date()).getTime();
-      attack.velocity = {x: 0, y: 0};
-      var velScale = 1;
-      attack.velocity.x = Math.sin(rotation)*velScale;
-      attack.velocity.y = -Math.cos(rotation)*velScale;
+        attack.lastUpdated = (new Date()).getTime();
+        attack.velocity = {x: 0, y: 0};
+        var velScale = 1;
+        attack.velocity.x = Math.sin(rotation)*velScale;
+        attack.velocity.y = -Math.cos(rotation)*velScale;
 
-      stage.addChild(attack.go);
+        stage.addChild(attack.go);
+      } else {
+        attack.go = new PIXI.Sprite(textures.attack);
+
+        attack.go.position.x = -1000;
+        attack.go.position.y = -1000;
+        attack.go.rotation = rotation;
+
+        attack.go.scale.x = 1;
+        attack.go.scale.y = 1;
+
+        attack.beenDeflected = false;
+
+        attack.lastUpdated = (new Date()).getTime();
+        attack.velocity = {x: -1000, y: -1000};
+
+        stage.addChild(attack.go);
+      }
 
       return attack;
   }
@@ -347,7 +375,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       newY = attack.go.position.y + velocity.y * timeDelta;
 
       var dist = Math.sqrt(Math.pow(newX - centerPosition.x, 2) + Math.pow(newY - centerPosition.y, 2));
-      if (dist < centerRadius && _g.state.started) {
+      if (dist < centerRadius && _g.state.started && !attack.beenDeflected) {
         //decrement health of performer
         _g.state.performer.health -= damage;
         console.log("Health:", _g.state.performer.health);
@@ -356,7 +384,13 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
 
       if (_g.state.started) {
         for (var i = 0; i<_g.state.performer.legs.length; i++) {
-          var legPosition = _g.state.performer.legs[i].lowerLeg.position;
+          var legPosition = {x: 0, y: 0}
+            , angle = _g.state.performer.legs[i].lowerLeg.rotation
+            , position = _g.state.performer.legs[i].lowerLeg.position;
+
+          legPosition.x = position.x + 121 * .6 * Math.cos(angle + Math.PI / 2);
+          legPosition.y = position.y + 121 * .6 * Math.sin(angle + Math.PI / 2);
+
           var dist = Math.sqrt(Math.pow(newX - legPosition.x, 2) + Math.pow(newY - legPosition.y, 2));
           if (dist < tentacleHitRadius && !attack.beenDeflected) {
             attack.beenDeflected = true;
