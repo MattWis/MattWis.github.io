@@ -1,6 +1,9 @@
 define([], function () {
   var G = {
     start: function () {
+      var _g = this;
+      console.log("G:", _g);
+      _g.state.started = true;
       var count = 120;
 
       var counter = setInterval(timer, 1000); //1000 will  run it every 1 second

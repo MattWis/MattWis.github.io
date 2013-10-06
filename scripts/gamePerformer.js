@@ -1,7 +1,8 @@
 define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], function ($, PIXI, vr, HANDLE_EVENT, TIMER, HELPERS) {
   var G = {
     state: {
-      database: {
+      started: false
+      , database: {
         avatars: null
       ,	myAvatar: null
       ,	attacks: null
@@ -37,7 +38,11 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         center: null
       , legs: []
       , hitRadius: 50
+      , tentacleHitRadius: 10
       , health: 9001
+      , healthBar: null
+      , maxHealth: 9001
+      , healthBarDimensions: {w: 500, h: 50, inset: 5}
       }
     }
   , init: function () {
@@ -85,7 +90,6 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       var _g = this
         , textures = _g.state.textures
         , avatar = _g.state.avatar
-        , screensize = _g.state.screensize
         , performer = _g.state.performer
         , stage = _g.state.stage
         , sprites =  _g.state.sprites
@@ -109,17 +113,43 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       sprites.start.pivot.y = 250;
       sprites.start.visible = true;
 
+
+      performer.healthBar = new PIXI.Graphics();
+
+      performer.updateHealthBar = function () {
+        var _g = this
+            , performer = _g.state.performer
+            , size = _g.state.screensize;
+
+        if (performer.health >= 0 && _g.state.started) {
+          performer.healthBar.clear();
+          performer.healthBar.lineStyle(3, 0xFF7A7A)
+          performer.healthBar.drawRect(size.w/2 - performer.healthBarDimensions.w/2, size.h*.9
+                                      ,performer.healthBarDimensions.w, performer.healthBarDimensions.h);
+          performer.healthBar.beginFill(0xFF7A7A)
+          performer.healthBar.lineStyle(0, 0xFFFFFF)
+          performer.healthBar.drawRect(size.w/2 - performer.healthBarDimensions.w/2 + performer.healthBarDimensions.inset
+                                      ,size.h * .9 + performer.healthBarDimensions.inset
+                                      ,(performer.healthBarDimensions.w - 2*performer.healthBarDimensions.inset)*performer.health/performer.maxHealth
+                                      ,performer.healthBarDimensions.h - 2*performer.healthBarDimensions.inset);
+        }
+
+      }
+
+
+      stage.addChild(performer.healthBar);
+
       sprites.start.click = function(e) {
         sprites.start.visible = false;
-        TIMER.start();
+        TIMER.start.bind(_g)();
       };
 
       stage.addChild(sprites.start);
 
       var center = new PIXI.Sprite(textures.center);
 
-      center.position.x = screensize.w / 2;
-      center.position.y = screensize.h / 2;
+      center.position.x = size.w / 2;
+      center.position.y = size.h / 2;
 
       center.pivot.x = 10;
       center.pivot.y = 10;
@@ -132,8 +162,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
 
       function createLeg(rotation) {
         var leg = new PIXI.Sprite(textures.leg);
-        leg.position.x = screensize.w / 2;
-        leg.position.y = screensize.h / 2;
+        leg.position.x = size.w / 2;
+        leg.position.y = size.h / 2;
 
         leg.pivot.x = 0;
         leg.pivot.y = 0;
@@ -163,6 +193,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       var _g = this;
       requestAnimationFrame(_g.render.bind(_g));
       requestAnimationFrame(_g.allAttacksAnimationHandler.bind(_g));
+      requestAnimationFrame(_g.state.performer.updateHealthBar.bind(_g));
       vr.requestAnimationFrame(_g.tick.bind(_g));
     }
   , defaultAvatar: function (texture) {
@@ -205,6 +236,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
 
   }
   , defaultAttack: function (textures, attacker) {
+      console.log("Attacker", attacker);
       var _g = this
         , stage = _g.state.stage
         , attack = {}
@@ -276,7 +308,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         , timeDelta = (new Date()).getTime() - attack.lastUpdated
         , centerPosition = _g.state.performer.center.position
         , centerRadius = _g.state.performer.hitRadius
-        , damage = 1
+        , tentacleHitRadius = _g.state.performer.tentacleHitRadius
+        , damage = 1000
         , newX
         , newY;
         //, distance = velocity * timeDelta;
@@ -295,6 +328,17 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         console.log("Health:", _g.state.performer.health);
         return attackKey;
       }
+
+      // for (var i = 0; i<_g.state.performer.legs.length; i++) {
+      //   var legPosition = _g.state.performer.legs[i].lowerLeg.position;
+      //   var dist = Math.sqrt(Math.pow(newX - legPosition.x, 2) + Math.pow(newY - legPosition.y, 2));
+      //   if (dist < tentacleHitRadius) {
+      //     //decrement health of performer
+      //     attack.velocity.x *= -1;
+      //     attack.velocity.y *= -1;
+      //     // return attackKey;
+      //   }
+      // }
       attack.go.position.x = newX;
       attack.go.position.y = newY;
 
