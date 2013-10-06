@@ -91,6 +91,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
             if (!sprites.button.clicked && ! sprites.button.charging) {
               sprites.button.clicked = true;
               sprites.button.lastClicked = (new Date()).getTime();
+              sprites.button.canFire = false;
               console.log("Fired");     
             }
           }
@@ -157,6 +158,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
                 }
               } else {
                 button.charging = false;
+                button.canFire = true;
                 for (var i = 0; i<charges.length; i++) {
                   var charge = charges[i];
                   charge.visible = true;
