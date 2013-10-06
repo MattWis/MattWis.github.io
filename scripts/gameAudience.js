@@ -65,8 +65,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
             , sprites = _g.state.sprites
             , size = _g.state.screensize;
 
-          textures.button = PIXI.Texture.fromImage("images/fireButton.png"); 
-          textures.charge = PIXI.Texture.fromImage("images/circleFraction.png"); 
+          textures.button = PIXI.Texture.fromImage("images/fireButton.png");
+          textures.charge = PIXI.Texture.fromImage("images/circleFraction.png");
 
           sprites.button = new PIXI.Sprite(textures.button);
           sprites.button.setInteractive(true);
@@ -158,33 +158,6 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
         }
       , simulate: function () {
           var _g = this;
-        }
-      , addAvatar: function (id, avatarData) {
-          var _g = this
-            , stage = _g.state.stage
-            , avatars = _g.state.avatars
-            , textures = _g.state.textures
-            , avatar;
-
-          avatar = {};
-          avatar.go = new PIXI.Sprite(textures.avatar);
-
-          //avatar.go.position = avatarData;
-          avatar.go.position.x = avatarData.x;
-          avatar.go.position.y = avatarData.y;
-
-          avatar.go.scale.x = 0.5;
-          avatar.go.scale.y = 0.5;
-
-          stage.addChild(avatar.go);
-          avatars[id] = avatar;
-        }
-      , changeAvatar: function(id, avatarData) {
-          var _g = this
-            , avatar = _g.avatars[id];
-
-          avatar.go.position.x = avatarData.x;
-          avatar.go.position.y = avatarData.y;
         }
       }
 
