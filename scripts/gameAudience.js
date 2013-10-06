@@ -164,7 +164,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
             if (button.clicked) {
               var delta = (new Date()).getTime() - sprites.button.lastClicked
                 , execTime = 250
-                , scaleFactor = 800;
+                , scaleFactor = 1200;
 
               if (delta <= execTime) {
                 button.scale.x = button.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;

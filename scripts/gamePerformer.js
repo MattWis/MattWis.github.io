@@ -293,9 +293,11 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         //decrement health of performer
         _g.state.performer.health -= damage;
         console.log("Health:", _g.state.performer.health);
+        return attackKey;
       }
       attack.go.position.x = newX;
       attack.go.position.y = newY;
+
       //attack.go.position.x += distance * Math.sin(rotation);
       //attack.go.position.y -= distance * Math.cos(rotation);
       var x = attack.go.position.x
