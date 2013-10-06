@@ -73,6 +73,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           sprites.button.position.x = size.w/2.0;
           sprites.button.position.y = size.h/2.0;
           sprites.button.initialScale = {x: .75, y: .75};
+          sprites.button.hoverIncrease = .02;
           sprites.button.scale.x = .75;
           sprites.button.scale.y = .75;
           sprites.button.pivot.x = 250;
@@ -84,12 +85,20 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
             console.log("Fired");
           }
 
+          sprites.button.mouseover = function(e) {
+            sprites.button.hover = true;
+          }
+
+          sprites.button.mouseout = function(e) {
+            sprites.button.hover = false;
+          }
+
           sprites.button.animationHandler = function() {
-            if (sprites.button.clicked) {
+            var button = sprites.button;
+            if (button.clicked) {
               var delta = (new Date()).getTime() - sprites.button.lastClicked
                 , execTime = 250
-                , scaleFactor = 800
-                , button = sprites.button;
+                , scaleFactor = 800;
               if (delta <= execTime) {
                 console.log()
                 button.scale.x = button.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
@@ -97,6 +106,12 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
               } else {
                 button.clicked = false;
               }
+            } else if (button.hover) {
+              button.scale.x = button.initialScale.x + button.hoverIncrease;
+              button.scale.y = button.initialScale.y + button.hoverIncrease;
+            } else {
+              button.scale.x = button.initialScale.x;
+              button.scale.y = button.initialScale.y;
             }
           }
 
