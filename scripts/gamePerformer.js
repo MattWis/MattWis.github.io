@@ -167,18 +167,18 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       function createLeg(rotation) {
         var upperLeg = new PIXI.Sprite(textures.upperLeg)
         , lowerLeg = new PIXI.Sprite(textures.lowerLeg)
-        , length = 50;
+        , length = 75;
 
         upperLeg.position.x = size.w / 2;
         upperLeg.position.y = size.h / 2;
         upperLeg.visible = false;
 
 
-        upperLeg.pivot.x = 0;
+        upperLeg.pivot.x = 39 / 2;
         upperLeg.pivot.y = 0;
 
-        upperLeg.scale.x = 1;
-        upperLeg.scale.y = 1;
+        upperLeg.scale.x = .6;
+        upperLeg.scale.y = .6;
 
         upperLeg.rotation = rotation;
 
@@ -190,8 +190,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         lowerLeg.pivot.x = 0;
         lowerLeg.pivot.y = 0;
 
-        lowerLeg.scale.x = 1;
-        lowerLeg.scale.y = 1;
+        lowerLeg.scale.x = .6;
+        lowerLeg.scale.y = .6;
 
         lowerLeg.rotation = rotation;
 
@@ -275,6 +275,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       attack.go.scale.x = 1;
       attack.go.scale.y = 1;
 
+      attack.beenDeflected = false;
+
       attack.lastUpdated = (new Date()).getTime();
       attack.velocity = {x: 0, y: 0};
       var velScale = 1;
@@ -332,7 +334,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         , centerPosition = _g.state.performer.center.position
         , centerRadius = _g.state.performer.hitRadius
         , tentacleHitRadius = _g.state.performer.tentacleHitRadius
-        , damage = 1000 / (_g.state.avatarCount + 1)        
+        , damage = 1000 / (_g.state.avatarCount + 1)
         , newX
         , newY;
         //, distance = velocity * timeDelta;
@@ -356,11 +358,12 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         for (var i = 0; i<_g.state.performer.legs.length; i++) {
           var legPosition = _g.state.performer.legs[i].lowerLeg.position;
           var dist = Math.sqrt(Math.pow(newX - legPosition.x, 2) + Math.pow(newY - legPosition.y, 2));
-          if (dist < tentacleHitRadius) {
+          if (dist < tentacleHitRadius && !attack.beenDeflected) {
+            attack.beenDeflected = true;
             //decrement health of performer
-            // attack.velocity.x *= -1;
-            // attack.velocity.y *= -1;
-            return attackKey;
+            attack.velocity.x *= -1;
+            attack.velocity.y *= -1;
+            // return attackKey;
           }
         }
       }
@@ -385,7 +388,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
           , state = _g.state.vr.vrState
           , legs = _g.state.performer.legs
           , screensize = _g.state.screensize
-          , length = 50;
+          , length = 110;
 
         if (!vr.pollState(_g.state.vr.vrState)) {
         }
@@ -394,16 +397,15 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
           for (var n = 0; n < state.sixense.controllers.length; n++) {
             var controller = state.sixense.controllers[n];
             var cx = controller.position[0];
-
             var cy = controller.position[2];
             var angle = Math.atan2(cy, cx);
             legs[n].upperLeg.rotation = angle + Math.PI / 2;
 
-            legs[n].lowerLeg.position.x = screensize.w / 2 + Math.cos(angle) * length * legs[n].upperLeg.scale.x;
-            legs[n].lowerLeg.position.y = screensize.h / 2 + Math.sin(angle) * length * legs[n].upperLeg.scale.y;
+            legs[n].lowerLeg.position.x = screensize.w / 2 + Math.cos(angle + Math.PI) * length * legs[n].upperLeg.scale.x;
+            legs[n].lowerLeg.position.y = screensize.h / 2 + Math.sin(angle + Math.PI) * length * legs[n].upperLeg.scale.y;
 
             // legs[n].lowerLeg.rotation = angle + Math.sin((new Date()).getTime() / 250);
-            legs[n].lowerLeg.rotation = angle + controller.joystick[0];
+            legs[n].lowerLeg.rotation = angle + Math.PI / 2 + controller.joystick[0];
           }
         }
 
