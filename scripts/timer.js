@@ -7,7 +7,7 @@ define([], function () {
 
       function timer() {
         count = count-1;
-        if (count <= 0) {
+        if (count < 0) {
            clearInterval(counter);
            return;
         }

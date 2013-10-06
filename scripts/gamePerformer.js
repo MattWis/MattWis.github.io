@@ -133,34 +133,24 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'timer', 'helpers'], function (
         var _g = this
           , avatars = _g.state.avatars
           , textures = _g.state.textures
+          , width = textures.avatar.width
+          , height = textures.avatar.height
           , avatar;
 
         avatar = _g.defaultAvatar(textures.avatar);
 
+        console.log(avatarData);
         avatar.index = _g.state.avatarCount;
+        var angle = avatarData.angle;
+        console.log(angle);
+        avatar.go.rotation = 2*Math.PI - angle;
+        avatar.go.position.x = _g.state.screensize.w/2 + 200 * Math.sin(angle);
+        avatar.go.position.y = _g.state.screensize.h/2 + 200 * Math.cos(angle);
+        console.log(avatar.go.position);
         _g.state.avatarCount += 1;
         avatars[id] = avatar;
 
-        _g.reorientAvatars(avatars);
     }
-    , reorientAvatars: function (avatars) {
-        var _g = this
-          , count = _g.state.avatarCount
-          , degreeDelta = 2 * Math.PI / count
-          , height = _g.state.screensize.h
-          , width = _g.state.screensize.w;
-
-        for (var avatarKey in avatars) {
-          if (avatars.hasOwnProperty(avatarKey)) {
-            var avatar = avatars[avatarKey]
-              , degrees = avatar.index * degreeDelta;
-
-            avatar.go.position.x = 200 * Math.cos(degrees) + width/2;
-            avatar.go.position.y = 200 * Math.sin(degrees) + height/2;
-            avatar.go.rotation = degrees - Math.PI / 2;
-          }
-        }
-      }
     , defaultAttack: function (textures, attacker) {
         var _g = this
           , stage = _g.state.stage

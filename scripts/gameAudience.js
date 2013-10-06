@@ -24,7 +24,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
 				//}
 				}
       , sprites: {
-          charges: []
+          charges: [],
+          shields: []
         }
       }
     , init: function () {
@@ -44,7 +45,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           var _g = this
             , database = _g.state.database;
           database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/avatars');
-          database.myAvatar = database.avatars.push({joined: (new Date()).toJSON()});
+          database.myAvatar = database.avatars.push({joined: (new Date()).toJSON(), angle: Math.random()*2*Math.PI});
           database.myAvatar.onDisconnect().remove();
           database.attacks = new Firebase('https://olinhackmit.firebaseIO.com/attacks');
 
@@ -73,6 +74,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
 
           textures.button = PIXI.Texture.fromImage("images/fireButton.png");
           textures.charge = PIXI.Texture.fromImage("images/circleFraction.png");
+          textures.shield = PIXI.Texture.fromImage("images/barrierFraction.png");
+          textures.activeUser = PIXI.Texture.fromImage("images/activePlayerIndicator.png");
 
           sprites.button = new PIXI.Sprite(textures.button);
           sprites.button.setInteractive(true);
@@ -87,6 +90,16 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           sprites.button.visible = true;
           sprites.button.clicked = false;
           sprites.button.chargeTime = 500;
+
+          sprites.activeUser = new PIXI.Sprite(textures.activeUser);
+          sprites.activeUser.position.x = size.w/2.0;
+          sprites.activeUser.position.y = size.h/2.0;
+          sprites.activeUser.initialScale = {x: 1.0, y: .75};
+          sprites.activeUser.scale.x = .75;
+          sprites.activeUser.scale.y = .75;
+          sprites.activeUser.pivot.x = 387;
+          sprites.activeUser.pivot.y = 387;
+          sprites.activeUser.visible = true;
 
           sprites.button.click = function(e) {
             if (!sprites.button.clicked && ! sprites.button.charging) {
@@ -120,6 +133,24 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
               charge.visible = true;
               sprites.charges.push(charge);
               stage.addChild(charge);
+            }
+          }
+
+          sprites.button.addShields = function() {
+            for (var i=0; i<3; i++) {
+              var shield = new PIXI.Sprite(textures.shield);
+              shield.position.x = size.w/2.0;
+              shield.position.y = size.h/2.0;
+              shield.initialScale = {x: .75, y: .75};
+              shield.hoverIncrease = .02;
+              shield.scale.x = .75;
+              shield.scale.y = .75;
+              shield.pivot.x = 353.5;
+              shield.pivot.y = 353.5;
+              shield.rotation = i*Math.PI*2/3;
+              shield.visible = true;
+              sprites.shields.push(shield);
+              stage.addChild(shield);
             }
           }
 
@@ -185,6 +216,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           }
 
           sprites.button.addCharges();
+          sprites.button.addShields();
+          stage.addChild(sprites.activeUser);
           stage.addChild(sprites.button);
         }
 
@@ -193,6 +226,9 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
             , stage = _g.state.stage;
           stage.mousedown = HANDLE_INPUT.clickOnStage.bind(_g);
         }
+      , addActiveUser: function (userData) {
+        console.log(userData);
+      }
       , render: function () {
           var _g = this;
           _g.simulate.bind(_g)();
