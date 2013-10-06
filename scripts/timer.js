@@ -28,7 +28,8 @@ define([], function () {
       }
     },
     endGame: function () {
-
+      console.log("Game ended");
+      $('#result').css('display', 'auto');
     }
   }
 

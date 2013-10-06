@@ -134,6 +134,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
                                       ,size.h * .9 + performer.healthBarDimensions.inset
                                       ,(performer.healthBarDimensions.w - 2*performer.healthBarDimensions.inset)*performer.health/performer.maxHealth
                                       ,performer.healthBarDimensions.h - 2*performer.healthBarDimensions.inset);
+        } else if (performer.health <= 0) {
+          TIMER.endGame();
         }
 
       }

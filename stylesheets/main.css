@@ -81,3 +81,14 @@ canvas:active, canvas:focus {
     text-align: right;
     z-index: 1000000;
 }
+
+#result {
+  margin: auto;
+  position: relative;
+  text-align: center;
+  margin-top: 150px;
+  height: 0;
+  font-size: 2em;
+  z-index: 1000000;
+  display: none;
+}
