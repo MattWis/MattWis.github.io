@@ -65,8 +65,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
             , sprites = _g.state.sprites
             , size = _g.state.screensize;
 
-          textures.avatar = PIXI.Texture.fromImage("images/testAvatar.png");
           textures.button = PIXI.Texture.fromImage("images/fireButton.png"); 
+          textures.charge = PIXI.Texture.fromImage("images/circleFraction.png"); 
 
           sprites.button = new PIXI.Sprite(textures.button);
           sprites.button.setInteractive(true);
@@ -95,6 +95,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
 
           sprites.button.animationHandler = function() {
             var button = sprites.button;
+            var charge = sprites.charge;
             if (button.clicked) {
               var delta = (new Date()).getTime() - sprites.button.lastClicked
                 , execTime = 250
@@ -103,20 +104,44 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
                 console.log()
                 button.scale.x = button.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
                 button.scale.y = button.initialScale.y + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
+                charge.scale.x = charge.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
+                charge.scale.y = charge.initialScale.y + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
               } else {
                 button.clicked = false;
               }
             } else if (button.hover) {
               button.scale.x = button.initialScale.x + button.hoverIncrease;
               button.scale.y = button.initialScale.y + button.hoverIncrease;
+              charge.scale.x = charge.initialScale.x + button.hoverIncrease;
+              charge.scale.y = charge.initialScale.y + button.hoverIncrease;
+
             } else {
               button.scale.x = button.initialScale.x;
               button.scale.y = button.initialScale.y;
+              charge.scale.x = charge.initialScale.x;
+              charge.scale.y = charge.initialScale.y;
             }
           }
 
-          console.log(sprites.button);
           stage.addChild(sprites.button);
+
+          sprites.charge = new PIXI.Sprite(textures.charge);
+          sprites.charge.setInteractive(true);
+          sprites.charge.position.x = size.w/2.0;
+          sprites.charge.position.y = size.h/2.0;
+          sprites.charge.initialScale = {x: .75, y: .75};
+          sprites.charge.hoverIncrease = .02;
+          sprites.charge.scale.x = .75;
+          sprites.charge.scale.y = .75;
+          sprites.charge.pivot.x = 250;
+          sprites.charge.pivot.y = 250;
+
+          sprites.charge.animationHandler = function() {
+            var charge = sprites.charge;
+          }
+
+          console.log(sprites.charge);
+          stage.addChild(sprites.charge);
         }
 
       , setupHandlers: function () {
