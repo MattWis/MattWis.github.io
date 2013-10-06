@@ -45,9 +45,7 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
         var _g = this
           , database = _g.state.database;
         database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/avatars');
-        database.avatars.remove();
         database.attacks = new Firebase('https://olinhackmit.firebaseIO.com/attacks');
-        database.attacks.remove();
       }
     , setupGraphics: function () {
         var _g = this
