@@ -149,13 +149,13 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
         var _g = this
           , textures = _g.state.textures
           , attacker = _g.state.avatars[attack.attacker]
-          , attacks = _g.attacks;
+          , attacks = _g.state.attacks;
 
         attack = _g.defaultAttack(textures, attacker);
 
         attack.index = _g.state.attackCount;
         _g.state.attackCount += 1;
-        attacks[id] = attack;
+        attacks[attackID] = attack;
 
         console.log(attacks);
       }
