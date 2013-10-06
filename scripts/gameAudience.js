@@ -11,8 +11,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
       , renderer: null
       , stage: null
       , screensize : {
-          w: document.width
-        , h: document.height
+          w: null
+        , h: null
       }
       , textures: {
           avatar: null
@@ -27,8 +27,21 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           charges: []
         }
       }
+    , getDimensions: function () {
+        //http://stackoverflow.com/questions/3437786/how-to-get-web-page-size-browser-window-size-screen-size-in-a-cross-browser-wa
+        var w = window
+          , d = document
+          , e = d.documentElement
+          , g = d.getElementsByTagName('body')[0]
+          , x = w.innerWidth || e.clientWidth || g.clientWidth
+          , y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+        return {width: x, height: y};
+      }
     , init: function () {
           var _g = this;
+
+          _g.state.screensize.h = this.getDimensions().height;
+          _g.state.screensize.w = this.getDimensions().width;
 
           _g.setupGraphics.bind(_g)();
           _g.setupObjects.bind(_g)();
@@ -49,7 +62,9 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
         }
       , setupGraphics: function () {
           var _g = this
-            , renderer = new PIXI.autoDetectRenderer(document.width, document.height)
+            , height = _g.state.screensize.h
+            , width = _g.state.screensize.w
+            , renderer = new PIXI.autoDetectRenderer(width, height)
             , stage = new PIXI.Stage(0xEEEEEE, true);
 
           renderer.view.style.display = "block";
@@ -65,8 +80,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
             , sprites = _g.state.sprites
             , size = _g.state.screensize;
 
-          textures.button = PIXI.Texture.fromImage("images/fireButton.png"); 
-          textures.charge = PIXI.Texture.fromImage("images/circleFraction.png"); 
+          textures.button = PIXI.Texture.fromImage("images/fireButton.png");
+          textures.charge = PIXI.Texture.fromImage("images/circleFraction.png");
 
           sprites.button = new PIXI.Sprite(textures.button);
           sprites.button.setInteractive(true);
@@ -192,33 +207,6 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
         }
       , simulate: function () {
           var _g = this;
-        }
-      , addAvatar: function (id, avatarData) {
-          var _g = this
-            , stage = _g.state.stage
-            , avatars = _g.state.avatars
-            , textures = _g.state.textures
-            , avatar;
-
-          avatar = {};
-          avatar.go = new PIXI.Sprite(textures.avatar);
-
-          //avatar.go.position = avatarData;
-          avatar.go.position.x = avatarData.x;
-          avatar.go.position.y = avatarData.y;
-
-          avatar.go.scale.x = 0.5;
-          avatar.go.scale.y = 0.5;
-
-          stage.addChild(avatar.go);
-          avatars[id] = avatar;
-        }
-      , changeAvatar: function(id, avatarData) {
-          var _g = this
-            , avatar = _g.avatars[id];
-
-          avatar.go.position.x = avatarData.x;
-          avatar.go.position.y = avatarData.y;
         }
       }
 
