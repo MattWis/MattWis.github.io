@@ -4,6 +4,8 @@ define([], function () {
       var _g = this;
       console.log("G:", _g);
       _g.state.started = true;
+      _g.state.counters.shotsFired = 0;
+      $('#countDiv').html(_g.state.counters.shotsFired.toString() + " shots fired");
       var count = 120;
 
       var counter = setInterval(timer, 1000); //1000 will  run it every 1 second
