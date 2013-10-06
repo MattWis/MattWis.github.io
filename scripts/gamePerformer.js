@@ -4,11 +4,13 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
       database: {
         avatars: null
       ,	myAvatar: null
+      ,	attacks: null
       }
     , renderer: null
     , stage: null
     , textures: {
         avatar: null
+      , attack: null
       }
     , avatarCount: 0
     , avatars: {
@@ -17,6 +19,7 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
           //, index: 0
         //}
       }
+    , attackCount: 0
     , attacks: {
       }
     }
@@ -36,6 +39,8 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
           , database = _g.state.database;
         database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/avatars');
         database.avatars.remove();
+        database.attacks = new Firebase('https://olinhackmit.firebaseIO.com/attacks');
+        database.attacks.remove();
       }
     , setupGraphics: function () {
         var _g = this
@@ -55,6 +60,7 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
           , stage = _g.state.stage;
 
         textures.avatar = PIXI.Texture.fromImage("images/avatar2.png");
+        textures.attack = PIXI.Texture.fromImage("images/attack.png");
       }
     , setupHandlers: function () {
         var _g = this
@@ -119,12 +125,36 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
           }
         }
       }
-    , changeAvatar: function(id, avatarData) {
+    , defaultAttack: function(textures, attacker) {
         var _g = this
-          , avatar = _g.avatars[id];
+          , stage = _g.state.stage
+          , attack = {};
 
-        //avatar.go.position.x = avatarData.x;
-        //avatar.go.position.y = avatarData.y;
+        attack.go = new PIXI.Sprite(textures);
+
+        attack.go.position.x = attacker.go.position.x;
+        attack.go.position.y = attacker.go.position.y;
+
+        attack.go.scale.x = 1;
+        attack.go.scale.y = 1;
+
+        stage.addChild(attack.go);
+
+        return attack;
+    }
+    , addAttack: function(attackID, attack) {
+        var _g = this
+          , textures = _g.state.textures
+          , attacker = _g.state.avatars[attack.attacker]
+          , attacks = _g.attacks;
+
+        attack = _g.defaultAttack(textures.attack, attacker);
+
+        attack.index = _g.state.attackCount;
+        _g.state.attackCount += 1;
+        attacks[id] = attack;
+
+        console.log(attacks);
       }
     }
 
