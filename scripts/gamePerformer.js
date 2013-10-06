@@ -388,7 +388,6 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         if (_g.state.vr.vrState.sixense.present) {
           for (var n = 0; n < state.sixense.controllers.length; n++) {
             var controller = state.sixense.controllers[n];
-            console.log(controller.joystick[0], controller.joystick[1]);
             var cx = controller.position[0];
 
             var cy = controller.position[2];
@@ -398,7 +397,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
             legs[n].lowerLeg.position.x = screensize.w / 2 + Math.cos(angle + Math.PI/2) * length * legs[n].upperLeg.scale.x;
             legs[n].lowerLeg.position.y = screensize.h / 2 + Math.sin(angle + Math.PI/2) * length * legs[n].upperLeg.scale.y;
 
-            legs[n].lowerLeg.rotation = angle + Math.sin((new Date()).getTime() / 250);
+            // legs[n].lowerLeg.rotation = angle + Math.sin((new Date()).getTime() / 250);
+            legs[n].lowerLeg.rotation = angle + controller.joystick[0];
           }
         }
 
