@@ -14,12 +14,26 @@ define(['zepto', 'pixi'], function ($, PIXI) {
       });
 
       database.avatars.on('child_removed', function(child) {
+        var avatars = _g.state.avatars
+          , key = child.name();
+
         console.log('audience removed');
+
+        _g.state.avatarCount -= 1;
+        _g.state.stage.removeChild(avatars[key].go);
+        delete(avatars[key]);
       });
 
       database.attacks.on('child_added', function(attack) {
-        console.log('attack added');
         _g.addAttack(attack.name(), attack.val());
+      });
+
+      database.attacks.on('child_removed', function(attack) {
+        var attacks = _g.state.attacks
+          , key = attack.name();
+
+        _g.state.stage.removeChild(attacks[key].go);
+        delete(attacks[key]);
       });
     }
   }

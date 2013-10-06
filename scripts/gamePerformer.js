@@ -150,7 +150,6 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
 
         attack.lastUpdated = (new Date()).getTime();
 
-        console.log(attack);
         stage.addChild(attack.go);
 
         return attack;
@@ -187,8 +186,6 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
             , nullObj = {};
 
           nullObj[key] = null;
-          _g.state.stage.removeChild(attacks[key].go);
-          delete(attacks[key]);
           _g.state.database.attacks.update(nullObj);
         }
       }
@@ -203,8 +200,6 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'helpers'], function ($, PIXI, 
           , max_y = _g.state.screensize.w
           , timeDelta = (new Date()).getTime() - attack.lastUpdated
           , distance = velocity * timeDelta;
-
-        console.log("handled");
 
         attack.go.position.x += distance * Math.sin(rotation);
         attack.go.position.y -= distance * Math.cos(rotation);
