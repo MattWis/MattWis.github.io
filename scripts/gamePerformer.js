@@ -54,7 +54,7 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
           , avatar = _g.state.avatar
           , stage = _g.state.stage;
 
-        textures.avatar = PIXI.Texture.fromImage("images/avatar.png");
+        textures.avatar = PIXI.Texture.fromImage("images/avatar2.png");
       }
     , setupHandlers: function () {
         var _g = this
@@ -79,8 +79,8 @@ define(['zepto', 'pixi', 'handleEventPerformer'], function ($, PIXI, HANDLE_EVEN
         avatar.go.position.x = 400;
         avatar.go.position.y = 300;
 
-        avatar.go.scale.x = 0.5;
-        avatar.go.scale.y = 0.5;
+        // avatar.go.scale.x = 0.15;
+        // avatar.go.scale.y = 0.15;
 
         stage.addChild(avatar.go);
 
