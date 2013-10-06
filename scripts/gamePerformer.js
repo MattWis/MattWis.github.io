@@ -169,7 +169,7 @@ define(['zepto', 'pixi', 'handleEventPerformer', 'timer', 'helpers'], function (
 
         attack.lastUpdated = (new Date()).getTime();
         attack.velocity = {x: 0, y: 0};
-        var velScale = 0.1;
+        var velScale = 1;
         attack.velocity.x = Math.sin(rotation)*velScale;
         attack.velocity.y = -Math.cos(rotation)*velScale;
 
