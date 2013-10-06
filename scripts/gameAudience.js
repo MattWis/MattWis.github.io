@@ -11,8 +11,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
       , renderer: null
       , stage: null
       , screensize : {
-          w: document.width
-        , h: document.height
+          w: null
+        , h: null
       }
       , textures: {
           avatar: null
@@ -27,8 +27,21 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
 
         }
       }
+    , getDimensions: function () {
+        //http://stackoverflow.com/questions/3437786/how-to-get-web-page-size-browser-window-size-screen-size-in-a-cross-browser-wa
+        var w = window
+          , d = document
+          , e = d.documentElement
+          , g = d.getElementsByTagName('body')[0]
+          , x = w.innerWidth || e.clientWidth || g.clientWidth
+          , y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+        return {width: x, height: y};
+      }
     , init: function () {
           var _g = this;
+
+          _g.state.screensize.h = this.getDimensions().height;
+          _g.state.screensize.w = this.getDimensions().width;
 
           _g.setupGraphics.bind(_g)();
           _g.setupObjects.bind(_g)();
@@ -49,7 +62,9 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
         }
       , setupGraphics: function () {
           var _g = this
-            , renderer = new PIXI.autoDetectRenderer(document.width, document.height)
+            , height = _g.state.screensize.h
+            , width = _g.state.screensize.w
+            , renderer = new PIXI.autoDetectRenderer(width, height)
             , stage = new PIXI.Stage(0xEEEEEE, true);
 
           renderer.view.style.display = "block";
