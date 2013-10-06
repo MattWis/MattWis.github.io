@@ -11,8 +11,6 @@ define(['zepto', 'pixi'], function ($, PIXI) {
 
       database.avatars.on('child_changed', function(child) {
         console.log('audience changed');
-        console.log(child.name());
-        console.log(child.val());
       });
 
       database.avatars.on('child_removed', function(child) {
