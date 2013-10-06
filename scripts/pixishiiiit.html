@@ -1,0 +1,59 @@
+<html>
+	<head>
+		<title>Fuckin Around</title>
+		<script type="text/javascript" src="../3rdparty/vr.js"></script>
+		<script type="text/javascript" src="../3rdparty/pixi.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var WIDTH = 400;
+			var HEIGHT = 300;
+			
+			// let pixi choose WebGL or canvas
+			var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
+
+			var stage = new PIXI.Stage(0xFFCCCC, true);
+
+
+			// attach render to page
+			renderer.view.style.display = 'block';
+			document.body.appendChild(renderer.view);
+
+			var image = PIXI.Texture.fromImage('/images/circleFraction.png');
+			var center = new PIXI.Sprite(image);
+
+			center.position.x = WIDTH/2;
+			center.position.y = HEIGHT/2;
+
+			center.scale.x = 20;
+			center.scale.y = 20;
+
+			stage.addChild(center);
+			console.log(image);
+
+			renderer.render(stage);
+
+			// var square = PIXI.Texture.fromImage('img.jpg');
+			// var center = new PIXI.Sprite(square);
+
+			// // rotate around center
+			// center.anchor.x = 0.5;
+			// center.anchor.y = 0.5;
+
+			// // center in stage
+			// center.position.x = WIDTH / 2;
+			// center.position.y = HEIGHT / 2;
+
+			// // place it on the stage for rendering
+			// stage.addChild(center);
+
+			// function gameLoop() {
+			//   requestAnimFrame(gameLoop);
+			//   center.rotation -= 0.02;
+			//   renderer.render(stage);
+			// }
+
+			// requestAnimFrame(gameLoop);
+		</script>
+	</body>
+</html>
