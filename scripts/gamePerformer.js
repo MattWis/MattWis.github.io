@@ -57,7 +57,11 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         if (error) {
           window.alert('VR error:\n' + error.toString());
         }
-      });
+      }
+
+      stage.addChild(center);
+
+      performer.center = center;
 
       requestAnimationFrame(_g.render.bind(_g));
       vr.requestAnimationFrame(_g.tick.bind(_g));
@@ -131,25 +135,42 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       performer.center = center;
 
       function createLeg(rotation) {
-        var leg = new PIXI.Sprite(textures.leg);
-        leg.position.x = screensize.w / 2;
-        leg.position.y = screensize.h / 2;
+        var upperLeg = new PIXI.Sprite(textures.leg)
+        , lowerLeg = new PIXI.Sprite(textures.leg)
+        , length = 50;
 
-        leg.pivot.x = 0;
-        leg.pivot.y = 0;
+        upperLeg.position.x = screensize.w / 2;
+        upperLeg.position.y = screensize.h / 2;
 
-        leg.scale.x = 2;
-        leg.scale.y = 2;
 
-        leg.rotation = rotation;
+        upperLeg.pivot.x = 0;
+        upperLeg.pivot.y = 0;
 
-        stage.addChild(leg);
-        performer.legs.push(leg);
-      };
+        upperLeg.scale.x = 1.5;
+        upperLeg.scale.y = 1.5;
+
+        upperLeg.rotation = rotation;
+
+        lowerLeg.position.x = screensize.w / 2 + Math.cos(rotation + Math.PI/2) * length * upperLeg.scale.x;
+        lowerLeg.position.y = screensize.h / 2 + Math.sin(rotation + Math.PI/2) * length * upperLeg.scale.y;
+
+
+        lowerLeg.pivot.x = 0;
+        lowerLeg.pivot.y = 0;
+
+        lowerLeg.scale.x = 1.5;
+        lowerLeg.scale.y = 1.5;
+
+        lowerLeg.rotation = rotation;
+
+        stage.addChild(upperLeg);
+        stage.addChild(lowerLeg);
+        performer.legs.push({upperLeg: upperLeg, lowerLeg: lowerLeg});
+      }
 
       createLeg(Math.PI/2);
       createLeg(-Math.PI/2);
-    }
+  }
   , setupHandlers: function () {
       var _g = this
         , stage = _g.state.stage;
@@ -308,27 +329,47 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         return attackKey;
       }
 
-  }
+    }
 
-  , tick: function () {
-      var _g = this
-        , state = _g.state.vr.vrState;
-      
-      if (!vr.pollState(_g.state.vr.vrState)) {
-      }
+    , tick: function () {
+        var _g = this
+          , state = _g.state.vr.vrState
+          , legs = _g.state.performer.legs
+          , screensize = _g.state.screensize
+          , length = 50;
 
-      if (_g.state.vr.vrState.sixense.present) {
-        for (var n = 0; n < state.sixense.controllers.length; n++) {
-          var controller = state.sixense.controllers[n];
-          var cx = controller.position[0];
+        if (!vr.pollState(_g.state.vr.vrState)) {
+        }
 
-          var cy = controller.position[2];
-          var angle = Math.atan2(cy, cx);
-          _g.state.performer.legs[n].rotation = angle;
+        if (_g.state.vr.vrState.sixense.present) {
+          for (var n = 0; n < state.sixense.controllers.length; n++) {
+            var controller = state.sixense.controllers[n];
+            console.log(controller.joystick[0], controller.joystick[1]);
+            var cx = controller.position[0];
+
+            var cy = controller.position[2];
+            var angle = Math.atan2(cy, cx);
+            legs[n].upperLeg.rotation = angle;
+
+            legs[n].lowerLeg.position.x = screensize.w / 2 + Math.cos(angle + Math.PI/2) * length * legs[n].upperLeg.scale.x;
+            legs[n].lowerLeg.position.y = screensize.h / 2 + Math.sin(angle + Math.PI/2) * length * legs[n].upperLeg.scale.y;
+
+            legs[n].lowerLeg.rotation = angle + Math.sin((new Date()).getTime() / 250);
+          }
+        }
+
+        if (_g.state.vr.vrState.sixense.present) {
+          for (var n = 0; n < state.sixense.controllers.length; n++) {
+            var controller = state.sixense.controllers[n];
+            var cx = controller.position[0];
+
+            var cy = controller.position[2];
+            var angle = Math.atan2(cy, cx);
+            _g.state.performer.legs[n].rotation = angle;
+          }
         }
       }
-    }
-  }
+
   window.G = G;
   return G;
 });
