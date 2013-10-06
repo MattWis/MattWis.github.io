@@ -7,6 +7,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
         , myAvatar: null
         , attacks: null
         , myID: null
+        , rotation: Math.random()*2*Math.PI
         }
       , renderer: null
       , stage: null
@@ -45,7 +46,7 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           var _g = this
             , database = _g.state.database;
           database.avatars = new Firebase('https://olinhackmit.firebaseIO.com/avatars');
-          database.myAvatar = database.avatars.push({joined: (new Date()).toJSON(), angle: Math.random()*2*Math.PI});
+          database.myAvatar = database.avatars.push({joined: (new Date()).toJSON(), angle: database.rotation});
           database.myAvatar.onDisconnect().remove();
           database.attacks = new Firebase('https://olinhackmit.firebaseIO.com/attacks');
 
@@ -100,6 +101,8 @@ define(['zepto', 'pixi', 'input/handleInputAudience', 'helpers'], function ($, P
           sprites.activeUser.scale.y = .75;
           sprites.activeUser.pivot.x = 387;
           sprites.activeUser.pivot.y = 387;
+          console.log(_g.state.database.rotation);
+          sprites.activeUser.rotation = _g.state.database.rotation;
           sprites.activeUser.visible = true;
 
           sprites.button.click = function(e) {
