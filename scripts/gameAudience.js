@@ -97,9 +97,11 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
           sprites.button.chargeTime = 500;
 
           sprites.button.click = function(e) {
-            sprites.button.clicked = true;
-            sprites.button.lastClicked = (new Date()).getTime();
-            console.log("Fired");
+            if (!sprites.button.clicked && ! sprites.button.charging) {
+              sprites.button.clicked = true;
+              sprites.button.lastClicked = (new Date()).getTime();
+              console.log("Fired");     
+            }
           }
 
           sprites.button.mouseover = function(e) {
@@ -137,12 +139,11 @@ define(['zepto', 'pixi', 'input/handleInputAudience'], function ($, PIXI, HANDLE
                 , scaleFactor = 800;
 
               if (delta <= execTime) {
-                var angle = delta/execTime*2*Math.pi;
-                console.log()
                 button.scale.x = button.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
                 button.scale.y = button.initialScale.y + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
                 for (var i = 0; i < charges.length; i++) {
-                  var charge = charges[i];
+                  charge = charges[i];
+                  charge.visible = false;
                   charge.scale.x = charge.initialScale.x + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
                   charge.scale.y = charge.initialScale.y + (execTime/2 - Math.abs(delta - execTime/2))/scaleFactor;
                 }
