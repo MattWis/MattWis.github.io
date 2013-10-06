@@ -273,6 +273,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       attack.go.scale.x = 1;
       attack.go.scale.y = 1;
 
+      attack.beenDeflected = false;
+
       attack.lastUpdated = (new Date()).getTime();
       attack.velocity = {x: 0, y: 0};
       var velScale = 1;
@@ -330,7 +332,7 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         , centerPosition = _g.state.performer.center.position
         , centerRadius = _g.state.performer.hitRadius
         , tentacleHitRadius = _g.state.performer.tentacleHitRadius
-        , damage = 1000 / (_g.state.avatarCount + 1)        
+        , damage = 1000 / (_g.state.avatarCount + 1)
         , newX
         , newY;
         //, distance = velocity * timeDelta;
@@ -354,11 +356,12 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         for (var i = 0; i<_g.state.performer.legs.length; i++) {
           var legPosition = _g.state.performer.legs[i].lowerLeg.position;
           var dist = Math.sqrt(Math.pow(newX - legPosition.x, 2) + Math.pow(newY - legPosition.y, 2));
-          if (dist < tentacleHitRadius) {
+          if (dist < tentacleHitRadius && !attack.beenDeflected) {
+            attack.beenDeflected = true;
             //decrement health of performer
-            // attack.velocity.x *= -1;
-            // attack.velocity.y *= -1;
-            return attackKey;
+            attack.velocity.x *= -1;
+            attack.velocity.y *= -1;
+            // return attackKey;
           }
         }
       }
