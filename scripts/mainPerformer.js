@@ -4,6 +4,7 @@ require.config({
 	paths: {
 		zepto: '3rdparty/zepto.min',
 		pixi: '3rdparty/pixi',
+		vr: '3rdparty/vr'
 	},
 	shim: {
 		zepto: {
@@ -11,6 +12,9 @@ require.config({
 		},
 		pixi: {
 			exports: 'PIXI'
+		},
+		vr: {
+			exports: 'vr'
 		}
 	}
 });
