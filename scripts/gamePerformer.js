@@ -99,7 +99,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       textures.avatar = PIXI.Texture.fromImage("images/avatar2.png");
       textures.attack = PIXI.Texture.fromImage("images/attack.png");
       textures.center = PIXI.Texture.fromImage("images/center.png");
-      textures.leg = PIXI.Texture.fromImage("images/leg.png");
+      textures.upperLeg = PIXI.Texture.fromImage("images/appendage1.png");
+      textures.lowerLeg = PIXI.Texture.fromImage("images/appendage2.png");
       textures.start = PIXI.Texture.fromImage("images/startButton.png");
 
       sprites.start = new PIXI.Sprite(textures.start);
@@ -162,8 +163,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
       performer.center = center;
 
       function createLeg(rotation) {
-        var upperLeg = new PIXI.Sprite(textures.leg)
-        , lowerLeg = new PIXI.Sprite(textures.leg)
+        var upperLeg = new PIXI.Sprite(textures.upperLeg)
+        , lowerLeg = new PIXI.Sprite(textures.lowerLeg)
         , length = 50;
 
         upperLeg.position.x = size.w / 2;
@@ -174,8 +175,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         upperLeg.pivot.x = 0;
         upperLeg.pivot.y = 0;
 
-        upperLeg.scale.x = 1.5;
-        upperLeg.scale.y = 1.5;
+        upperLeg.scale.x = 1;
+        upperLeg.scale.y = 1;
 
         upperLeg.rotation = rotation;
 
@@ -187,8 +188,8 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
         lowerLeg.pivot.x = 0;
         lowerLeg.pivot.y = 0;
 
-        lowerLeg.scale.x = 1.5;
-        lowerLeg.scale.y = 1.5;
+        lowerLeg.scale.x = 1;
+        lowerLeg.scale.y = 1;
 
         lowerLeg.rotation = rotation;
 
@@ -394,10 +395,10 @@ define(['zepto', 'pixi', 'vr', 'handleEventPerformer', 'timer', 'helpers'], func
 
             var cy = controller.position[2];
             var angle = Math.atan2(cy, cx);
-            legs[n].upperLeg.rotation = angle;
+            legs[n].upperLeg.rotation = angle + Math.PI / 2;
 
-            legs[n].lowerLeg.position.x = screensize.w / 2 + Math.cos(angle + Math.PI/2) * length * legs[n].upperLeg.scale.x;
-            legs[n].lowerLeg.position.y = screensize.h / 2 + Math.sin(angle + Math.PI/2) * length * legs[n].upperLeg.scale.y;
+            legs[n].lowerLeg.position.x = screensize.w / 2 + Math.cos(angle) * length * legs[n].upperLeg.scale.x;
+            legs[n].lowerLeg.position.y = screensize.h / 2 + Math.sin(angle) * length * legs[n].upperLeg.scale.y;
 
             // legs[n].lowerLeg.rotation = angle + Math.sin((new Date()).getTime() / 250);
             legs[n].lowerLeg.rotation = angle + controller.joystick[0];
