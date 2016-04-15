@@ -1,0 +1,27 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely need to edit after that.
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+title: Matt Wismer
+email: mattwis86@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  This is my personal blog. I make no claims as to its usefulness, coherency,
+  or the frequency at which it will be updated.
+description2: >
+  This is my personal blog. I make no claims as to its usefulness, coherency,
+  or the frequency at which it will be updated. It may at some point contain
+  my CV. Hosted on
+  <a href="https://github.com/MattWis/MattWis.github.io">Github</a>, powered by
+  <a href="https://jekyllrb.com">Jekyll</a>. Grammar and spelling PRs
+  appreciated.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://mattwis.github.io" # the base hostname & protocol for your site
+twitter_username: MatthewWismer
+github_username:  MattWis
+
+# Build settings
+markdown: kramdown
