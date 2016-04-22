@@ -7,6 +7,13 @@ categories: jekyll update
 For those of you who are unaware, [Tak](http://www.cheapass.com/games/tak)
 is a game that I have been [playing](https://playtak.com) a lot of recently.
 
+EDIT: After a short discussion on the
+[Tak subreddit](https://www.reddit.com/r/Tak/comments/4euork/a_post_on_tak_strategy_where_i_try_to_coin_the/),
+it was decided that a better name would be influence, as opposed to
+concentration. BenWo then explained this idea in a
+[video](https://www.youtube.com/watch?v=z57rLl51VCc) which describes the
+term and it's implications better than this article does.
+
 I've been thinking about how to teach Tak strategy, and I think I've come up
 with a metric that will help explain the way I play. If you're familiar with
 Go, this will be the Tak equivalent of liberties. Concentration defines how I
