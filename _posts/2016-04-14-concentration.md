@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Concentration - Basic Tak Strategy"
-date:   2016-04-14 20:12:48 -0400
+date:   2016-04-14
 categories: jekyll update
 ---
 For those of you who are unaware, [Tak](http://www.cheapass.com/games/tak)
